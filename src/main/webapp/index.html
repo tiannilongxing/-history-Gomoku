@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋对战 - 大厅</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<!-- 用户信息栏 -->
+<div id="userInfoBar" class="user-info hidden">
+    <div>
+        <strong>欢迎，<span id="userNickname"></span></strong>
+        <span>积分: <span id="userScore">0</span></span>
+    </div>
+    <div class="user-actions">
+        <button id="updateNicknameBtn" class="btn">修改昵称</button>
+        <button id="updatePasswordBtn" class="btn">修改密码</button>
+        <button id="rankBtn" class="btn">排行榜</button>
+        <button id="logoutBtn" class="btn btn-danger">退出登录</button>
+    </div>
+</div>
+
+<div class="container">
+    <!-- 登录面板 -->
+    <div id="loginPanel" class="panel login-panel">
+        <h2>用户登录</h2>
+        <div class="input-group">
+            <input type="text" id="usernameInput" placeholder="用户名">
+        </div>
+        <div class="input-group">
+            <input type="password" id="passwordInput" placeholder="密码">
+        </div>
+        <button id="loginBtn" class="btn">登录</button>
+        <button id="showRegisterBtn" class="btn">注册账号</button>
+    </div>
+
+    <!-- 注册面板 -->
+    <div id="registerPanel" class="panel login-panel hidden">
+        <h2>用户注册</h2>
+        <div class="input-group">
+            <input type="text" id="regUsernameInput" placeholder="用户名">
+        </div>
+        <div class="input-group">
+            <input type="password" id="regPasswordInput" placeholder="密码">
+        </div>
+        <div class="input-group">
+            <input type="password" id="regConfirmPasswordInput" placeholder="确认密码">
+        </div>
+        <div class="input-group">
+            <input type="text" id="regNicknameInput" placeholder="昵称（可选）">
+        </div>
+        <button id="registerBtn" class="btn">注册</button>
+        <button id="showLoginBtn" class="btn">返回登录</button>
+    </div>
+
+    <!-- 排行榜面板 -->
+    <div id="rankPanel" class="panel login-panel hidden">
+        <h2>积分排行榜</h2>
+        <div id="rankList" class="room-list">
+            <!-- 排行榜内容动态生成 -->
+        </div>
+        <div class="status-message">
+            我的排名: <span id="myRank">-</span> | 我的积分: <span id="myScore">0</span>
+        </div>
+        <button id="closeRankBtn" class="btn">返回大厅</button>
+    </div>
+
+    <!-- 主大厅面板 -->
+    <div id="mainLobbyPanel" class="hidden">
+        <h1>五子棋对战大厅</h1>
+
+        <div class="panel center-panel">
+            <h2>房间管理</h2>
+            <div class="action-buttons">
+                <button id="createRoomBtn" class="btn btn-large">创建房间</button>
+                <div class="join-section">
+                    <input type="text" id="roomIdInput" placeholder="输入6位房间号" maxlength="6">
+                    <button id="joinRoomBtn" class="btn">加入房间</button>
+                </div>
+            </div>
+
+            <h3>房间列表</h3>
+            <button id="refreshRoomsBtn" class="btn">刷新列表</button>
+            <div id="roomList" class="room-list">
+                <!-- 房间列表动态生成 -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 修改昵称模态框 -->
+<div id="updateNicknameModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>修改昵称</h2>
+        <div class="input-group">
+            <input type="text" id="newNicknameInput" placeholder="新昵称">
+        </div>
+        <div class="modal-actions">
+            <button id="confirmUpdateNicknameBtn" class="btn">确认修改</button>
+            <button id="cancelUpdateNicknameBtn" class="btn btn-danger">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 修改密码模态框 -->
+<div id="updatePasswordModal" class="modal hidden">
+    <div class="modal-content">
+        <h2>修改密码</h2>
+        <div class="input-group">
+            <input type="password" id="oldPasswordInput" placeholder="原密码">
+        </div>
+        <div class="input-group">
+            <input type="password" id="newPasswordInput" placeholder="新密码">
+        </div>
+        <div class="input-group">
+            <input type="password" id="confirmNewPasswordInput" placeholder="确认新密码">
+        </div>
+        <div class="modal-actions">
+            <button id="confirmUpdatePasswordBtn" class="btn">确认修改</button>
+            <button id="cancelUpdatePasswordBtn" class="btn btn-danger">取消</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
+

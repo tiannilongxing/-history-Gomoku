@@ -1,0 +1,448 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Microsoft YaHei', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+    color: #fff;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.room-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.login-panel {
+    max-width: 400px;
+    margin: 50px auto;
+    text-align: center;
+}
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    gap: 20px;
+    flex: 1;
+}
+
+.btn {
+    background: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.btn:hover {
+    background: #357ae8;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-large {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+}
+
+.btn-success {
+    background: #2ecc71;
+}
+
+.btn-success:hover {
+    background: #27ae60;
+}
+
+.btn-danger {
+    background: #e74c3c;
+}
+
+.btn-danger:hover {
+    background: #c0392b;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.room-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.room-item {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.room-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateX(5px);
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.join-section {
+    display: flex;
+    gap: 10px;
+}
+
+.join-section input {
+    flex: 1;
+}
+
+.user-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.user-actions .btn {
+    width: auto;
+    margin: 0;
+}
+
+/* 游戏棋盘样式 */
+.game-board-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+    gap: 0;
+    width: 600px;
+    height: 600px;
+    background: #deb887;
+    border: 2px solid #8b4513;
+    position: relative;
+}
+
+.cell {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #8b4513;
+    position: relative;
+    cursor: pointer;
+}
+
+.cell:hover {
+    background: rgba(222, 184, 135, 0.7);
+}
+
+.piece {
+    position: absolute;
+    width: 85%;
+    height: 85%;
+    border-radius: 50%;
+    top: 7.5%;
+    left: 7.5%;
+    z-index: 10;
+}
+
+.black {
+    background: radial-gradient(circle at 30% 30%, #666, #000);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.white {
+    background: radial-gradient(circle at 30% 30%, #fff, #ccc);
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.last-move {
+    box-shadow: 0 0 0 2px red;
+}
+
+.winning-piece {
+    animation: pulse 1.5s infinite;
+    box-shadow: 0 0 15px gold, 0 0 30px orange;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* 玩家信息样式 */
+.player-info {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.player-details {
+    margin-top: 10px;
+}
+
+.player-name {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.player-status {
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.current-player {
+    background: rgba(74, 144, 226, 0.3);
+    box-shadow: 0 0 10px rgba(74, 144, 226, 0.5);
+}
+
+.winner-player {
+    background: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 15px gold;
+    animation: winnerGlow 2s infinite;
+}
+
+@keyframes winnerGlow {
+    0% { box-shadow: 0 0 10px gold; }
+    50% { box-shadow: 0 0 20px orange; }
+    100% { box-shadow: 0 0 10px gold; }
+}
+
+/* 聊天区域样式 */
+.chat-box {
+    height: 400px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.message {
+    margin-bottom: 8px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.system-message {
+    background: rgba(255, 255, 0, 0.2);
+    text-align: center;
+    font-style: italic;
+}
+
+.victory-message {
+    background: linear-gradient(45deg, #ffd700, #ff8c00);
+    color: #000;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1em;
+    animation: victoryPulse 2s infinite;
+}
+
+@keyframes victoryPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex: 1;
+}
+
+/* 状态消息 */
+.status-message {
+    text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.turn-info {
+    text-align: center;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+/* 等待消息 */
+.waiting-message {
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+/* 胜利遮罩层 */
+.victory-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.victory-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    border: 3px solid gold;
+    color: #333;
+}
+
+.victory-text {
+    font-size: 2.5em;
+    color: gold;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
+
+.winner-name {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.victory-actions {
+    margin-top: 20px;
+}
+
+/* 模态框 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    color: #333;
+    min-width: 400px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions .btn {
+    flex: 1;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .game-layout {
+        grid-template-columns: 250px 1fr 250px;
+    }
+
+    .game-board {
+        width: 500px;
+        height: 500px;
+    }
+}
+
+@media (max-width: 900px) {
+    .game-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr auto;
+    }
+
+    .game-board {
+        width: 400px;
+        height: 400px;
+    }
+}

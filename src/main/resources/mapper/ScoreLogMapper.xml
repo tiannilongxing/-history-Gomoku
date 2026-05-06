@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.qvtu.dao.ScoreLogDao">
+    <resultMap id="ScoreLogMap" type="cn.edu.qvtu.entity.ScoreLog">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="change_score" property="changeScore"/>
+        <result column="reason" property="reason"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 插入积分记录 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO score_log (user_id, change_score, reason)
+        VALUES (#{userId}, #{changeScore}, #{reason})
+    </insert>
+
+    <!-- 查询用户积分记录（时间降序） -->
+    <select id="selectByUserId" resultMap="ScoreLogMap">
+        SELECT * FROM score_log
+        WHERE user_id = #{userId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 多条件查询积分记录 -->
+    <select id="selectScoreLogsByCondition" resultMap="ScoreLogMap">
+        SELECT sl.* FROM score_log sl
+        LEFT JOIN user u ON sl.user_id = u.id
+        <where>
+            <if test="userId != null">
+                AND sl.user_id = #{userId}
+            </if>
+            <if test="reason != null and reason != ''">
+                AND sl.reason LIKE CONCAT('%', #{reason}, '%')
+            </if>
+            <if test="startTime != null">
+                AND sl.create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND sl.create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY sl.create_time DESC
+    </select>
+
+    <!-- 根据ID查询单条记录 -->
+    <select id="selectById" resultMap="ScoreLogMap">
+        SELECT * FROM score_log WHERE id = #{id}
+    </select>
+</mapper>
+

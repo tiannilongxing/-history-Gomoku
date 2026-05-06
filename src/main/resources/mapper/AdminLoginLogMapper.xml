@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.qvtu.dao.AdminLoginLogDao">
+    <resultMap id="AdminLoginLogMap" type="cn.edu.qvtu.entity.AdminLoginLog">
+        <id column="id" property="id"/>
+        <result column="admin_id" property="adminId"/>
+        <result column="admin_name" property="adminName"/>
+        <result column="login_ip" property="loginIp"/>
+        <result column="login_location" property="loginLocation"/>
+        <result column="browser" property="browser"/>
+        <result column="os" property="os"/>
+        <result column="status" property="status"/>
+        <result column="message" property="message"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 插入管理员登录日志 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO admin_login_log (admin_id, admin_name, login_ip, login_location, browser, os, status, message)
+        VALUES (#{adminId}, #{adminName}, #{loginIp}, #{loginLocation}, #{browser}, #{os}, #{status}, #{message})
+    </insert>
+
+    <!-- 根据ID查询登录日志 -->
+    <select id="selectById" resultMap="AdminLoginLogMap">
+        SELECT * FROM admin_login_log WHERE id = #{id}
+    </select>
+
+    <!-- 多条件查询登录日志 -->
+    <select id="selectByCondition" resultMap="AdminLoginLogMap">
+        SELECT * FROM admin_login_log
+        <where>
+            <if test="adminId != null">
+                AND admin_id = #{adminId}
+            </if>
+            <if test="adminName != null and adminName != ''">
+                AND admin_name LIKE CONCAT('%', #{adminName}, '%')
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 统计登录日志数量 -->
+    <select id="countByCondition" resultType="int">
+        SELECT COUNT(*) FROM admin_login_log
+        <where>
+            <if test="adminId != null">
+                AND admin_id = #{adminId}
+            </if>
+            <if test="adminName != null and adminName != ''">
+                AND admin_name LIKE CONCAT('%', #{adminName}, '%')
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+    </select>
+
+    <!-- 删除登录日志 -->
+    <delete id="deleteById">
+        DELETE FROM admin_login_log WHERE id = #{id}
+    </delete>
+
+    <!-- 批量删除登录日志 -->
+    <delete id="deleteByIds">
+        DELETE FROM admin_login_log WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
+

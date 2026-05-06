@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.qvtu.dao.ChessboardDao">
+    <!-- 棋盘状态表字段映射 -->
+    <resultMap id="ChessboardMap" type="cn.edu.qvtu.entity.Chessboard">
+        <id column="id" property="id"/>
+        <result column="room_id" property="roomId"/>
+        <result column="chess_data" property="chessData"/>
+        <result column="current_turn" property="currentTurn"/>
+        <result column="last_move" property="lastMove"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- 插入棋盘状态 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO chessboard (room_id, chess_data, current_turn, last_move)
+        VALUES (#{roomId}, #{chessData}, #{currentTurn}, #{lastMove})
+    </insert>
+
+    <!-- 查询棋盘最新状态 -->
+    <select id="selectTopByRoomId" resultMap="ChessboardMap">
+        SELECT * FROM chessboard
+        WHERE room_id = #{roomId}
+        ORDER BY update_time DESC
+            LIMIT 1
+    </select>
+
+    <!-- 查询房间所有棋盘状态（时间降序） -->
+    <select id="selectByRoomId" resultMap="ChessboardMap">
+        SELECT * FROM chessboard
+        WHERE room_id = #{roomId}
+        ORDER BY update_time DESC
+    </select>
+</mapper>
+

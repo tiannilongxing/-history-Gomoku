@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.qvtu.dao.RoomDao">
+    <resultMap id="RoomMap" type="cn.edu.qvtu.entity.Room">
+        <id column="id" property="id"/>
+        <result column="room_id" property="roomId"/>
+        <result column="player1_id" property="player1Id"/>
+        <result column="player2_id" property="player2Id"/>
+        <result column="status" property="status"/>
+        <result column="winner" property="winner"/>
+        <result column="create_time" property="createTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="duration" property="duration"/>
+    </resultMap>
+
+    <!-- 插入新房间 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO room (room_id, player1_id, player2_id, status, winner)
+        VALUES (#{roomId}, #{player1Id}, #{player2Id}, #{status}, #{winner})
+    </insert>
+
+    <!-- 根据房间号查询房间 -->
+    <select id="selectByRoomId" resultMap="RoomMap">
+        SELECT * FROM room WHERE room_id = #{roomId}
+    </select>
+
+    <!-- 查询所有房间 -->
+    <select id="selectAllRooms" resultMap="RoomMap">
+        SELECT * FROM room ORDER BY create_time DESC
+    </select>
+
+    <!-- 更新房间状态，动态更新不为null的字段 -->
+    <update id="updateRoom">
+        UPDATE room
+        <set>
+            <if test="player1Id != null">player1_id = #{player1Id},</if>
+            <if test="player2Id != null">player2_id = #{player2Id},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="winner != null">winner = #{winner},</if>
+        </set>
+        WHERE room_id = #{roomId}
+    </update>
+
+    <!-- 更新结束时间和时长 -->
+    <update id="updateEndTime">
+        UPDATE room SET end_time = #{endTime}, duration = #{duration}
+        WHERE room_id = #{roomId}
+    </update>
+
+    <!-- 删除房间 -->
+    <delete id="deleteByRoomId">
+        DELETE FROM room WHERE room_id = #{roomId}
+    </delete>
+
+    <!-- 多条件查询房间列表 -->
+    <select id="selectRoomsByCondition" resultMap="RoomMap">
+        SELECT * FROM room
+        <where>
+            <if test="roomId != null and roomId != ''">
+                AND room_id LIKE CONCAT('%', #{roomId}, '%')
+            </if>
+            <if test="player1Id != null">
+                AND player1_id = #{player1Id}
+            </if>
+            <if test="player2Id != null">
+                AND player2_id = #{player2Id}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+            <if test="winner != null">
+                AND winner = #{winner}
+            </if>
+            <if test="startTime != null">
+                AND create_time >= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND create_time &lt;= #{endTime}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 统计对局数量 -->
+    <select id="countBattles" resultType="cn.edu.qvtu.entity.StatisticsView">
+        SELECT
+            COUNT(*) as totalBattles,
+            COUNT(CASE WHEN DATE(create_time) = CURDATE() THEN 1 END) as todayBattles,
+            COUNT(CASE WHEN status = 1 THEN 1 END) as activeBattles
+        FROM room
+    </select>
+
+    <!-- 查询近七日房间创建统计 -->
+    <select id="selectRecentWeekRoomStats" resultType="cn.edu.qvtu.entity.SevenDayStats">
+        SELECT
+            DATE(create_time) as date,
+            COUNT(*) as roomCount,
+            (SELECT COUNT(*) FROM viewer WHERE DATE(viewer.join_time) = DATE(room.create_time)) as viewerCount,
+            (SELECT COUNT(*) FROM room r2 WHERE DATE(r2.end_time) = DATE(room.create_time) AND r2.status = 2) as gameCount
+        FROM room
+        WHERE create_time >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+        GROUP BY DATE(create_time)
+        ORDER BY DATE(create_time)
+    </select>
+
+    <!-- 查询超时的房间列表（创建超过指定分钟未开始） -->
+    <select id="selectTimeoutRooms" resultMap="RoomMap">
+        SELECT * FROM room
+        WHERE status = 0
+          AND create_time &lt;= DATE_SUB(NOW(), INTERVAL #{timeoutMinutes} MINUTE)
+    </select>
+
+    <!-- 批量更新房间状态为超时结束 -->
+    <update id="batchUpdateRoomTimeout">
+        UPDATE room
+        SET status = 2,
+        end_time = NOW(),
+        duration = TIMESTAMPDIFF(SECOND, create_time, NOW())
+        WHERE room_id IN
+        <foreach collection="roomIds" item="roomId" open="(" separator="," close=")">
+            #{roomId}
+        </foreach>
+    </update>
+
+    <!-- 根据房间ID更新房间状态和获胜者 -->
+    <update id="updateRoomWithWinner">
+        UPDATE room
+        SET status = #{status},
+            winner = #{winner},
+            end_time = #{endTime},
+            duration = TIMESTAMPDIFF(SECOND, create_time, #{endTime})
+        WHERE room_id = #{roomId}
+    </update>
+</mapper>
+
