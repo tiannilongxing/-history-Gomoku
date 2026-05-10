@@ -2,6 +2,7 @@ package cn.edu.qvtu.dao;
 
 import cn.edu.qvtu.entity.Viewer;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,6 @@ public interface ViewerDao {
     /**
      * 查询房间的详细观战记录（包括用户信息）
      */
+    @MapKey("id")
     List<Map<String, Object>> selectViewerDetailsByRoomId(@Param("roomId") String roomId);
 }
-

@@ -61,5 +61,10 @@ public interface RoomDao {
                              @Param("status") Integer status,
                              @Param("winner") Integer winner,
                              @Param("endTime") Date endTime);
+
+    /**
+     * 查询用户参与的所有对局（作为玩家1或玩家2）
+     */
+    List<Room> selectRoomsByUserId(@Param("userId") Integer userId);
 }
 

@@ -39,6 +39,8 @@
             <if test="player2Id != null">player2_id = #{player2Id},</if>
             <if test="status != null">status = #{status},</if>
             <if test="winner != null">winner = #{winner},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="duration != null">duration = #{duration},</if>
         </set>
         WHERE room_id = #{roomId}
     </update>
@@ -92,6 +94,12 @@
         FROM room
     </select>
 
+    <!-- 查询指定日期的房间创建数量 -->
+    <select id="countRoomsByDate" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM room
+        WHERE DATE(create_time) = #{date}
+    </select>
+
     <!-- 查询近七日房间创建统计 -->
     <select id="selectRecentWeekRoomStats" resultType="cn.edu.qvtu.entity.SevenDayStats">
         SELECT
@@ -110,6 +118,13 @@
         SELECT * FROM room
         WHERE status = 0
           AND create_time &lt;= DATE_SUB(NOW(), INTERVAL #{timeoutMinutes} MINUTE)
+    </select>
+
+    <!-- 查询用户参与的所有对局（玩家1或玩家2） -->
+    <select id="selectRoomsByUserId" resultMap="RoomMap">
+        SELECT * FROM room
+        WHERE player1_id = #{userId} OR player2_id = #{userId}
+        ORDER BY create_time DESC
     </select>
 
     <!-- 批量更新房间状态为超时结束 -->

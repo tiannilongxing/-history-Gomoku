@@ -34,9 +34,11 @@ public class UserServiceImpl implements UserService {
                 user.setNickname(user.getUsername());
             }
             if (user.getScore() == null) {
-                user.setScore(0);
-                user.setStatus(1);
-            }
+            user.setScore(0);
+        }
+        if (user.getStatus() == null) {
+            user.setStatus(1);
+        }
 
             // 判断账号是否存在
             User existingUser = userDao.selectByUsername(user.getUsername());

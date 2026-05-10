@@ -73,13 +73,14 @@ public class AdminController {
      * POST /admin/changePassword
      */
     @PostMapping("/changePassword")
-    public ResponseEntity<Boolean> changePassword(@RequestBody Map<String, String> passwordData) {
+    public ResponseEntity<Boolean> changePassword(@RequestBody Map<String, String> passwordData,
+                                                   HttpServletRequest request) {
         try {
             Integer adminId = Integer.parseInt(passwordData.get("adminId"));
             String oldPassword = passwordData.get("oldPassword");
             String newPassword = passwordData.get("newPassword");
 
-            return adminService.changePassword(adminId, oldPassword, newPassword);
+            return adminService.changePassword(adminId, oldPassword, newPassword, request);
         } catch (NumberFormatException e) {
             return ResponseEntity.error("管理员ID格式错误");
         } catch (Exception e) {

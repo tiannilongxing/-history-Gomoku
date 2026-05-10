@@ -5,6 +5,8 @@ import cn.edu.qvtu.entity.*;
 import cn.edu.qvtu.service.ManageService;
 import cn.edu.qvtu.util.PasswordUtil;
 import cn.edu.qvtu.util.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class ManageServiceImpl implements ManageService {
+
+    private static final Logger log = LoggerFactory.getLogger(ManageServiceImpl.class);
 
     @Autowired
     private UserDao userDao;
@@ -77,7 +81,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询用户列表失败: " + e.getMessage());
         }
     }
@@ -172,7 +176,7 @@ public class ManageServiceImpl implements ManageService {
             if (StringUtils.hasText(user.getNickname())) {
                 updateData.setNickname(user.getNickname());
                 hasUpdate = true;
-                System.out.println("更新用户昵称: " + user.getNickname());
+                log.info("更新用户昵称: " + user.getNickname());
             }
 
             // 5. 更新分数 - 特别处理：如果分数有变化，记录积分变更日志
@@ -187,18 +191,18 @@ public class ManageServiceImpl implements ManageService {
                 scoreLog.setCreateTime(new Date());
                 scoreLogDao.insert(scoreLog);
 
-                System.out.println("积分变更记录：用户ID=" + user.getId() + ", 变更积分=" + changeScore + ", 新积分=" + user.getScore());
+                log.info("积分变更记录：用户ID=" + user.getId() + ", 变更积分=" + changeScore + ", 新积分=" + user.getScore());
 
                 updateData.setScore(user.getScore());
                 hasUpdate = true;
-                System.out.println("更新用户分数: " + user.getScore());
+                log.info("更新用户分数: " + user.getScore());
             }
 
             // 6. 更新状态
             if (user.getStatus() != null) {
                 updateData.setStatus(user.getStatus());
                 hasUpdate = true;
-                System.out.println("更新用户状态: " + user.getStatus());
+                log.info("更新用户状态: " + user.getStatus());
             }
 
             // 7. 更新密码（单独处理）
@@ -206,7 +210,7 @@ public class ManageServiceImpl implements ManageService {
                 existingUser.setPassword(PasswordUtil.ensurePasswordEncrypted(user.getPassword()));
                 userDao.updatePassword(existingUser);
                 hasUpdate = true;
-                System.out.println("更新用户密码");
+                log.info("更新用户密码");
             }
 
             // 8. 批量更新其他信息
@@ -225,7 +229,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("更新用户成功", true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("更新用户失败: " + e.getMessage());
         }
     }
@@ -274,7 +278,7 @@ public class ManageServiceImpl implements ManageService {
             user.setPassword(""); // 隐藏密码
 
             // 2. 查询用户参与的对局
-            List<Room> roomList = roomDao.selectRoomsByCondition(null, userId, userId, null, null, null, null);
+            List<Room> roomList = roomDao.selectRoomsByUserId(userId);
 
             // 3. 查询用户观战记录
             List<Viewer> viewList = new ArrayList<>();
@@ -294,7 +298,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询用户详情失败: " + e.getMessage());
         }
     }
@@ -335,7 +339,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询房间列表失败: " + e.getMessage());
         }
     }
@@ -431,7 +435,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询房间详情失败: " + e.getMessage());
         }
     }
@@ -493,7 +497,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询积分记录失败: " + e.getMessage());
         }
     }
@@ -550,7 +554,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("获取排行榜成功", rankingList);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取排行榜失败: " + e.getMessage());
         }
     }
@@ -639,7 +643,7 @@ public class ManageServiceImpl implements ManageService {
             return ResponseEntity.success("获取统计成功", stats);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取统计数据失败: " + e.getMessage());
         }
     }
@@ -678,7 +682,7 @@ public class ManageServiceImpl implements ManageService {
 
             return ResponseEntity.success("获取近七日统计成功", stats);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取统计失败: " + e.getMessage());
         }
     }
@@ -699,7 +703,7 @@ public class ManageServiceImpl implements ManageService {
 
             return ResponseEntity.success("获取观战记录成功", viewerDetails);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取观战记录失败: " + e.getMessage());
         }
     }

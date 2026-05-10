@@ -25,7 +25,7 @@ public interface AdminService {
     /**
      * 修改管理员密码
      */
-    ResponseEntity<Boolean> changePassword(Integer adminId, String oldPassword, String newPassword);
+    ResponseEntity<Boolean> changePassword(Integer adminId, String oldPassword, String newPassword, HttpServletRequest request);
 
     /**
      * 获取管理员信息

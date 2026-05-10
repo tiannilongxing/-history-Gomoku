@@ -176,7 +176,7 @@ public class ManageController {
          * 获取近七日对战统计折线图数据
          * GET /manage/stats/recent-week
          */
-        @GetMapping("/stats/recent-week")
+        @GetMapping("/recent-week")
         public ResponseEntity<List<Map<String, Object>>> getRecentWeekStats() {
             try {
                 // 直接调用接口方法

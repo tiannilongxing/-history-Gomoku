@@ -10,6 +10,8 @@ import cn.edu.qvtu.util.PasswordUtil;
 import cn.edu.qvtu.util.ResponseEntity;
 import cn.edu.qvtu.util.SessionUtil;
 import cn.edu.qvtu.util.UserAgentUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import java.util.*;
  */
 @Service
 public class AdminServiceImpl implements AdminService {
+
+    private static final Logger log = LoggerFactory.getLogger(AdminServiceImpl.class);
 
     @Autowired
     private AdminDao adminDao;
@@ -95,7 +99,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("登录成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("登录时发生错误: " + e.getMessage());
         }
     }
@@ -131,7 +135,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional
-    public ResponseEntity<Boolean> changePassword(Integer adminId, String oldPassword, String newPassword) {
+    public ResponseEntity<Boolean> changePassword(Integer adminId, String oldPassword, String newPassword, HttpServletRequest request) {
         try {
             // 1. 参数验证
             if (adminId == null) {
@@ -147,7 +151,7 @@ public class AdminServiceImpl implements AdminService {
                 return ResponseEntity.error("新密码长度不能少于6位");
             }
 
-            // 2. 查询管理员
+            // 2. 查询目标管理员
             Admin admin = adminDao.selectById(adminId);
             if (admin == null) {
                 return ResponseEntity.error("管理员不存在");
@@ -158,8 +162,14 @@ public class AdminServiceImpl implements AdminService {
                 return ResponseEntity.error("原密码错误");
             }
 
-            //不是超级管理员且修改的不是自己账号的密码
-            if(admin.getRole() != null && admin.getRole() != 2 && admin.getId() != adminId){
+            // 4. 权限检查：只有超级管理员(role=2)或本人才能修改密码
+            HttpSession session = request.getSession(false);
+            Integer currentAdminId = SessionUtil.getAdminId(session);
+            Integer currentAdminRole = SessionUtil.getAdminRole(session);
+            if (currentAdminId == null) {
+                return ResponseEntity.error("当前管理员未登录");
+            }
+            if (!currentAdminId.equals(adminId) && (currentAdminRole == null || currentAdminRole != 2)) {
                 return ResponseEntity.error("不是超级管理员，不能修改其他管理员的密码");
             }
 
@@ -178,7 +188,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("密码修改成功", true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("修改密码时发生错误: " + e.getMessage());
         }
     }
@@ -201,7 +211,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("获取成功", admin);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取管理员信息时发生错误: " + e.getMessage());
         }
     }
@@ -244,7 +254,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("更新成功", true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("更新管理员信息时发生错误: " + e.getMessage());
         }
     }
@@ -266,7 +276,7 @@ public class AdminServiceImpl implements AdminService {
             return admin != null && admin.getStatus() == 1;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return false;
         }
     }
@@ -301,7 +311,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("获取成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取当前管理员信息失败: " + e.getMessage());
         }
     }
@@ -366,7 +376,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("添加管理员成功", data);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("添加管理员失败: " + e.getMessage());
         }
     }
@@ -403,7 +413,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("成功更新 " + successCount + " 个管理员状态", true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("批量更新管理员状态失败: " + e.getMessage());
         }
     }
@@ -443,7 +453,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("删除管理员成功", true);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("删除管理员失败: " + e.getMessage());
         }
     }
@@ -467,7 +477,7 @@ public class AdminServiceImpl implements AdminService {
             adminLoginLogDao.insert(log);
         } catch (Exception e) {
             // 登录日志记录失败不应该影响登录流程
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
         }
     }
     // 在 AdminServiceImpl.java 中添加以下方法
@@ -490,7 +500,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("获取管理员列表成功", adminList);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("获取管理员列表失败: " + e.getMessage());
         }
     }
@@ -535,7 +545,7 @@ public class AdminServiceImpl implements AdminService {
             return ResponseEntity.success("查询成功", result);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("操作失败: {}", e.getMessage(), e);
             return ResponseEntity.error("查询管理员列表失败: " + e.getMessage());
         }
     }
