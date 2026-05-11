@@ -393,6 +393,8 @@ async function viewUserDetail(userId) {
 
         if (result.state) {
             const user = result.data.userInfo || result.data;
+            const roomList = result.data.roomList || [];
+            const scoreLogList = result.data.scoreLogList || [];
 
             const modalContent = `
                 <div class="modal-header">
@@ -433,15 +435,45 @@ async function viewUserDetail(userId) {
                     </div>
                     <div class="form-row">
                         <label>对局记录</label>
-                        <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto;">
-                            ${user.roomList && user.roomList.length > 0 ?
-                user.roomList.map(room => `
-                                    <div style="padding: 5px; border-bottom: 1px solid #eee;">
-                                        房间: ${room.roomId} - ${room.status === 1 ? '游戏中' : '已结束'} 
-                                        <span style="float: right;">${formatDate(room.createTime)}</span>
+                        <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+                            ${roomList.length > 0 ?
+                roomList.map(room => `
+                                    <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <strong>房间: ${escapeHtml(room.roomId)}</strong>
+                                            <span class="status-badge ${room.status === 1 ? 'status-active' : room.status === 2 ? 'status-inactive' : 'status-pending'}" style="margin-left: 10px;">
+                                                ${room.status === 1 ? '游戏中' : room.status === 2 ? '已结束' : '等待中'}
+                                            </span>
+                                            ${room.winner ? `<span style="margin-left: 10px;">获胜方: ${room.winner === 1 ? '玩家1' : '玩家2'}</span>` : ''}
+                                        </div>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span class="text-muted" style="font-size: 12px;">${formatDate(room.createTime)}</span>
+                                            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); viewRoomDetail('${escapeHtml(room.roomId)}')">
+                                                <span>查看</span>
+                                            </button>
+                                        </div>
                                     </div>
                                 `).join('')
                 : '<p class="text-muted text-center">暂无对局记录</p>'
+            }
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>积分记录 (最近${scoreLogList.length}条)</label>
+                        <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
+                            ${scoreLogList.length > 0 ?
+                scoreLogList.map(log => `
+                                    <div style="padding: 8px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
+                                        <div>
+                                            <span class="${log.changeScore > 0 ? 'text-success' : 'text-danger'}">
+                                                ${log.changeScore > 0 ? '+' : ''}${log.changeScore}
+                                            </span>
+                                            <span style="margin-left: 10px;">${escapeHtml(log.reason)}</span>
+                                        </div>
+                                        <span class="text-muted" style="font-size: 12px;">${formatDate(log.createTime)}</span>
+                                    </div>
+                                `).join('')
+                : '<p class="text-muted text-center">暂无积分记录</p>'
             }
                         </div>
                     </div>
@@ -899,22 +931,29 @@ async function viewRoomDetail(roomId) {
             if (room.chessboardList && room.chessboardList.length > 0) {
                 // 反转棋盘列表，使得第一步在最前面
                 const reversedChessboardList = [...room.chessboardList].reverse();
+                const totalSteps = reversedChessboardList.length;
 
                 modalContent += `
                     <div class="form-row">
-                        <label>棋局回放 (共${reversedChessboardList.length}步)</label>
+                        <label>棋局回放 (共${totalSteps}步)</label>
                         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-                            <button class="btn btn-sm btn-primary" onclick="showChessStep('${roomId}', 0)" id="stepBtn_0">第一步</button>
-                            <input type="range" min="0" max="${reversedChessboardList.length - 1}" value="${reversedChessboardList.length - 1}" 
-                                   class="form-range" id="stepSlider_${roomId}" 
+                            <button class="btn btn-sm btn-primary" onclick="showChessStep('${roomId}', 0)">第一步</button>
+                            <button class="btn btn-sm btn-info" onclick="prevChessStep('${roomId}', ${totalSteps})" id="prevBtn_${roomId}">
+                                &laquo; 上一步
+                            </button>
+                            <input type="range" min="0" max="${totalSteps - 1}" value="${totalSteps - 1}"
+                                   class="form-range" id="stepSlider_${roomId}"
                                    oninput="updateStepDisplay('${roomId}', this.value)"
                                    style="flex: 1;">
-                            <button class="btn btn-sm btn-primary" onclick="showChessStep('${roomId}', ${reversedChessboardList.length - 1})" id="stepBtn_${reversedChessboardList.length - 1}">最后一步</button>
-                            <span id="stepDisplay_${roomId}" style="min-width: 80px; text-align: center;">步骤: ${reversedChessboardList.length}/${reversedChessboardList.length}</span>
+                            <button class="btn btn-sm btn-info" onclick="nextChessStep('${roomId}', ${totalSteps})" id="nextBtn_${roomId}">
+                                下一步 &raquo;
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="showChessStep('${roomId}', ${totalSteps - 1})">最后一步</button>
+                            <span id="stepDisplay_${roomId}" style="min-width: 80px; text-align: center; font-weight: bold;">步骤: ${totalSteps}/${totalSteps}</span>
                         </div>
                     </div>
                     <div class="form-row">
-                        <div id="chessboardContainer_${roomId}" style="display: flex; justify-content: center; margin: 20px 0;">
+                        <div id="chessboardContainer_${roomId}" style="display: flex; justify-content: center; margin: 10px 0;">
                             <!-- 棋盘将在这里动态渲染 -->
                         </div>
                     </div>
@@ -1050,6 +1089,28 @@ function showChessStep(roomId, stepIndex) {
 // 更新步骤显示
 function updateStepDisplay(roomId, stepIndex) {
     showChessStep(roomId, parseInt(stepIndex));
+}
+
+// 上一步
+function prevChessStep(roomId, totalSteps) {
+    const slider = document.getElementById(`stepSlider_${roomId}`);
+    if (slider) {
+        const currentStep = parseInt(slider.value);
+        if (currentStep > 0) {
+            showChessStep(roomId, currentStep - 1);
+        }
+    }
+}
+
+// 下一步
+function nextChessStep(roomId, totalSteps) {
+    const slider = document.getElementById(`stepSlider_${roomId}`);
+    if (slider) {
+        const currentStep = parseInt(slider.value);
+        if (currentStep < totalSteps - 1) {
+            showChessStep(roomId, currentStep + 1);
+        }
+    }
 }
 
 // 棋盘渲染函数
