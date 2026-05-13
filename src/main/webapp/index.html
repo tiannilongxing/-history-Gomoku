@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+1<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -55,15 +55,17 @@
     </div>
 
     <!-- 排行榜面板 -->
-    <div id="rankPanel" class="panel login-panel hidden">
-        <h2>积分排行榜</h2>
-        <div id="rankList" class="room-list">
+    <div id="rankPanel" class="panel login-panel hidden" style="max-width: 600px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin: 0;">积分排行榜</h2>
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.9em;">
+                排名: <span id="myRank">-</span> | 积分: <span id="myScore">0</span>
+            </div>
+        </div>
+        <div id="rankList" class="room-list" style="max-height: 55vh; overflow-y: auto;">
             <!-- 排行榜内容动态生成 -->
         </div>
-        <div class="status-message">
-            我的排名: <span id="myRank">-</span> | 我的积分: <span id="myScore">0</span>
-        </div>
-        <button id="closeRankBtn" class="btn">返回大厅</button>
+        <button id="closeRankBtn" class="btn" style="width: 100%; margin-top: 12px;">返回大厅</button>
     </div>
 
     <!-- 主大厅面板 -->

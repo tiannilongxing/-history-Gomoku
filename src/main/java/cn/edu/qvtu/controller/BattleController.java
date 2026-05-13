@@ -1,6 +1,7 @@
 package cn.edu.qvtu.controller;
 
 import cn.edu.qvtu.service.BattleService;
+import cn.edu.qvtu.service.ManageService;
 import cn.edu.qvtu.util.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,9 @@ public class BattleController {
 
     @Autowired
     private BattleService battleService;
+
+    @Autowired
+    private ManageService manageService;
 
     /**
      * 创建房间
@@ -118,6 +122,20 @@ public class BattleController {
         } catch (Exception e) {
             logger.error("获取排行榜时发生异常", e);
             return ResponseEntity.error("获取排行榜失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 查询用户对局记录（排行榜点击查看）
+     */
+    @GetMapping("/rank/userRecord/{userId}")
+    public ResponseEntity<Map<String, Object>> getUserRecord(@PathVariable Integer userId) {
+        logger.info("收到查询用户对局记录请求，用户ID: {}", userId);
+        try {
+            return manageService.getUserDetail(userId);
+        } catch (Exception e) {
+            logger.error("查询用户对局记录时发生异常", e);
+            return ResponseEntity.error("查询用户对局记录失败: " + e.getMessage());
         }
     }
 

@@ -396,6 +396,7 @@ public class BattleServiceImpl implements BattleService {
 
                 Map<String, Object> rankInfo = new HashMap<>();
                 rankInfo.put("rank", rank);
+                rankInfo.put("userId", user.getId());
                 rankInfo.put("nickname", user.getNickname());
                 rankInfo.put("score", user.getScore());
                 rankList.add(rankInfo);

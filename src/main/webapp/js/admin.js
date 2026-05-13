@@ -268,14 +268,18 @@ async function loadDashboard() {
                     rankingsHTML += '<div class="rankings-list">';
                     rankings.forEach((item, index) => {
                         const medal = index < 3 ? ['🥇', '🥈', '🥉'][index] : '';
+                        const uid = item.userId || item.id;
                         rankingsHTML += `
-                            <div class="ranking-item ${index < 3 ? 'top-3' : ''}">
+                            <div class="ranking-item ${index < 3 ? 'top-3' : ''}"
+                                 onclick="viewUserDetail(${uid})"
+                                 style="cursor: pointer;"
+                                 title="点击查看 ${escapeHtml(item.nickname || '未知用户')} 的详情">
                                 <div class="ranking-number">${medal}${index + 1}</div>
                                 <div class="ranking-info">
-                                    <div class="ranking-name">${item.nickname || '未知用户'}</div>
+                                    <div class="ranking-name">${escapeHtml(item.nickname || '未知用户')}</div>
                                     <div class="ranking-details">
-                                        <span>ID: ${item.userId || item.id || 'N/A'}</span>
-                                        <span>用户名: ${item.username || '未知'}</span>
+                                        <span>ID: ${uid || 'N/A'}</span>
+                                        <span>用户名: ${escapeHtml(item.username || '未知')}</span>
                                     </div>
                                 </div>
                                 <div class="ranking-score">${item.score || 0}</div>
