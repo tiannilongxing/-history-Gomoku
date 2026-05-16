@@ -313,7 +313,7 @@ class MainApp {
                 align-items: center;
                 gap: 14px;
                 background: ${isTop3 ? '#fffdf5' : '#fff'};
-                border: 1px solid ${isTop3 ? '#f0e0a0' : '#eee'};
+                border: 1px solid ${isTop3 ? '#e8d8b0' : '#e8e8e8'};
             `;
             rankItem.title = `点击查看 ${rankInfo.nickname} 的对局记录`;
 
@@ -365,7 +365,7 @@ class MainApp {
             rankItem.addEventListener('mouseleave', () => {
                 rankItem.style.transform = '';
                 rankItem.style.boxShadow = '';
-                rankItem.style.borderColor = isTop3 ? '#f0e0a0' : '#eee';
+                rankItem.style.borderColor = isTop3 ? '#e8d8b0' : '#e8e8e8';
             });
             rankList.appendChild(rankItem);
         });
@@ -471,8 +471,8 @@ class MainApp {
             const isPlaying = room.status === 1 && room.player2;
             const canWatch = isPlaying;
 
-            const statusColor = room.status === 0 ? '#28a745' : room.status === 1 ? '#007bff' : '#888';
-            const statusBg = room.status === 0 ? '#e8f5e9' : room.status === 1 ? '#e3f2fd' : '#f5f5f5';
+            const statusColor = room.status === 0 ? '#2d8e5e' : room.status === 1 ? '#3a5ba0' : '#999';
+            const statusBg = room.status === 0 ? '#f0faf0' : room.status === 1 ? '#eef3fb' : '#f5f5f5';
 
             roomItem.innerHTML = `
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; background: ${statusBg};">
@@ -488,8 +488,8 @@ class MainApp {
                         </div>
                     </div>
                     <div style="flex-shrink: 0; margin-left: 12px;">
-                        ${canJoin ? '<span style="background: #28a745; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85em;">加入</span>' : ''}
-                        ${canWatch ? '<span style="background: #007bff; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85em;">观战</span>' : ''}
+                        ${canJoin ? '<span style="background: #2d8e5e; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85em;">加入</span>' : ''}
+                        ${canWatch ? '<span style="background: #3a5ba0; color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.85em;">观战</span>' : ''}
                         ${!canJoin && !canWatch ? '<span style="color: #888; font-size: 0.85em;">' + (room.status === 2 ? '已结束' : '已满') + '</span>' : ''}
                     </div>
                 </div>
@@ -576,7 +576,7 @@ class MainApp {
 
         if (scoreLogList.length > 0) {
             scoreLogList.forEach(log => {
-                const color = log.changeScore > 0 ? '#28a745' : '#dc3545';
+                const color = log.changeScore > 0 ? '#2d8e5e' : '#c0392b';
                 const sign = log.changeScore > 0 ? '+' : '';
                 html += `
                     <div style="padding: 5px; border-bottom: 1px solid #eee;">
@@ -743,9 +743,9 @@ class MainApp {
         board.style.gridTemplateColumns = `repeat(${boardSize}, ${cellSize}px)`;
         board.style.gridTemplateRows = `repeat(${boardSize}, ${cellSize}px)`;
         board.style.gap = '1px';
-        board.style.backgroundColor = '#8b4513';
+        board.style.backgroundColor = '#8b6914';
         board.style.padding = '2px';
-        board.style.border = '2px solid #5D2906';
+        board.style.border = '2px solid #8b6914';
         board.style.borderRadius = '3px';
 
         for (let i = 0; i < boardSize; i++) {

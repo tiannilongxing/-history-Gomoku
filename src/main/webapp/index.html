@@ -1,4 +1,4 @@
-1<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div class="stars"></div>
 <!-- 用户信息栏 -->
 <div id="userInfoBar" class="user-info hidden">
     <div>
@@ -58,7 +59,7 @@
     <div id="rankPanel" class="panel login-panel hidden" style="max-width: 600px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <h2 style="margin: 0;">积分排行榜</h2>
-            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.9em;">
+            <div style="background: linear-gradient(135deg, #3a5ba0 0%, #c8963e 100%); color: #fff; padding: 8px 16px; border-radius: 20px; font-size: 0.9em;">
                 排名: <span id="myRank">-</span> | 积分: <span id="myScore">0</span>
             </div>
         </div>
@@ -70,7 +71,7 @@
 
     <!-- 主大厅面板 -->
     <div id="mainLobbyPanel" class="hidden">
-        <h1>五子棋对战大厅</h1>
+        <h1 class="lobby-title">五子棋对战大厅</h1>
 
         <div class="panel center-panel">
             <h2>房间管理</h2>
