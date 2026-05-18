@@ -2,12 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg: #f7f5f2;
-  --surface: rgba(255, 255, 255, 0.75);
-  --surface-hover: rgba(255, 255, 255, 0.90);
-  --border: rgba(0, 0, 0, 0.07);
-  --text: #2c2c2c;
-  --text-muted: #8a8a8a;
+  --bg: #eee8df;
+  --surface: rgba(255, 250, 240, 0.82);
+  --surface-hover: rgba(255, 252, 245, 0.95);
+  --border: rgba(160, 130, 90, 0.12);
+  --text: #2e2a24;
+  --text-muted: #8c8070;
   --primary: #3a5ba0;
   --primary-hover: #4a6bb0;
   --success: #2d8e5e;
@@ -19,10 +19,12 @@
   --bronze: #b87333;
   --accent-warm: #d4a76a;
   --accent-gold: #b8860b;
+  --card: rgba(255, 248, 235, 0.85);
+  --card-hover: rgba(255, 251, 243, 0.95);
   --radius: 14px;
   --radius-sm: 8px;
-  --shadow: 0 2px 16px rgba(0,0,0,0.06);
-  --shadow-lg: 0 8px 32px rgba(0,0,0,0.08);
+  --shadow: 0 2px 16px rgba(120,90,40,0.08);
+  --shadow-lg: 0 8px 32px rgba(120,90,40,0.10);
 }
 
 * {
@@ -45,9 +47,10 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 15% 30%, rgba(58,91,160,0.07) 0%, transparent 50%),
-    radial-gradient(ellipse at 85% 70%, rgba(212,167,106,0.09) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 10%, rgba(200,150,62,0.05) 0%, transparent 40%);
+    radial-gradient(ellipse at 10% 20%, rgba(58,91,160,0.10) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 80%, rgba(212,167,106,0.14) 0%, transparent 45%),
+    radial-gradient(ellipse at 40% 60%, rgba(200,150,62,0.08) 0%, transparent 35%),
+    radial-gradient(ellipse at 70% 10%, rgba(45,142,94,0.05) 0%, transparent 40%);
   z-index: 0;
   pointer-events: none;
 }
@@ -59,9 +62,9 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(0,0,0,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,0.015) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(rgba(160,130,90,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(160,130,90,0.04) 1px, transparent 1px);
+  background-size: 50px 50px;
 }
 
 .container {
@@ -79,18 +82,134 @@ body::before {
   padding: 10px 20px;
 }
 
+/* ===== 浮动棋子装饰 ===== */
+.floating-pieces {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.float-piece {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.12;
+  animation: floatDrift 12s ease-in-out infinite;
+}
+
+.float-black {
+  background: radial-gradient(circle at 35% 35%, #555, #111);
+}
+
+.float-white {
+  background: radial-gradient(circle at 35% 35%, #fff, #d4d4d4);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.float-1 { top: 12%; left: 8%; animation-delay: 0s; animation-duration: 14s; width: 48px; height: 48px; }
+.float-2 { top: 25%; right: 12%; animation-delay: -3s; animation-duration: 16s; width: 40px; height: 40px; }
+.float-3 { bottom: 30%; left: 15%; animation-delay: -6s; animation-duration: 18s; width: 32px; height: 32px; }
+.float-4 { bottom: 15%; right: 8%; animation-delay: -2s; animation-duration: 13s; width: 40px; height: 40px; }
+.float-5 { top: 55%; left: 5%; animation-delay: -8s; animation-duration: 20s; width: 24px; height: 24px; }
+
+@keyframes floatDrift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-18px) rotate(5deg); }
+  50% { transform: translateY(-8px) rotate(-3deg); }
+  75% { transform: translateY(-22px) rotate(4deg); }
+}
+
+/* ===== 登录面板棋子装饰 ===== */
+.login-decor-pieces {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+/* ===== 棋子装饰通用 ===== */
+.decor-piece {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.decor-black {
+  background: radial-gradient(circle at 35% 35%, #555, #111);
+}
+
+.decor-white {
+  background: radial-gradient(circle at 35% 35%, #fff, #d4d4d4);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.decor-sm {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== 头部装饰线 ===== */
+.decor-line {
+  display: inline-block;
+  width: 32px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-warm), transparent);
+  border-radius: 1px;
+  align-self: center;
+}
+
+/* ===== 排行榜装饰线 ===== */
+.rank-accent-line {
+  width: 40px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-warm));
+  border-radius: 2px;
+  margin-top: 8px;
+}
+
+/* ===== 游戏头部装饰线 ===== */
+.header-accent-line {
+  width: 48px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent-warm));
+  border-radius: 2px;
+  margin-top: 6px;
+}
+
+/* ===== 面板装饰分割线 ===== */
+.panel-decor-line {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-warm), transparent);
+  border-radius: 1px;
+  margin: 10px auto;
+}
+
+/* ===== 聊天标题装饰点 ===== */
+.chat-title-decor {
+  color: var(--accent-warm);
+  font-size: 0.6em;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
 /* ===== 用户信息栏 ===== */
 .user-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius);
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
   margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
 }
 
 .user-info strong {
@@ -135,12 +254,12 @@ body::before {
 
 /* ===== 面板 ===== */
 .panel {
-  background: rgba(255, 255, 255, 0.75);
+  background: var(--card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-radius: var(--radius);
   padding: 24px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
 
@@ -148,6 +267,7 @@ body::before {
   max-width: 420px;
   margin: 80px auto;
   text-align: center;
+  animation: panelFadeIn 0.5s ease-out;
 }
 
 .login-panel h2 {
@@ -162,6 +282,12 @@ body::before {
 
 .login-panel .btn {
   margin: 4px 0;
+}
+
+/* ===== 面板入场动画 ===== */
+@keyframes panelFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== 按钮 ===== */
@@ -186,7 +312,7 @@ body::before {
 }
 
 .btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.97);
 }
 
 .btn:disabled {
@@ -251,8 +377,8 @@ input, select, textarea {
   width: 100%;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid var(--border);
+  background: rgba(255, 250, 240, 0.5);
   color: var(--text);
   font-size: 0.95em;
   transition: all 0.2s ease;
@@ -277,7 +403,7 @@ select {
 }
 
 select option {
-  background: #fff;
+  background: #fdf8f0;
   color: var(--text);
 }
 
@@ -306,19 +432,41 @@ textarea {
 }
 
 .room-item {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card);
   padding: 14px 16px;
   border-radius: var(--radius-sm);
   margin-bottom: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid var(--border);
+  animation: roomSlideIn 0.3s ease-out;
 }
 
 .room-item:hover {
-  background: rgba(255, 255, 255, 0.95);
-  border-color: rgba(0,0,0,0.1);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  background: var(--card-hover);
+  border-color: var(--accent-warm);
+  box-shadow: 0 2px 12px rgba(160,130,90,0.10);
+}
+
+@keyframes roomSlideIn {
+  from { opacity: 0; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ===== 房间状态色 ===== */
+.room-status-waiting {
+  background: #fdf6e3 !important;
+  border-left: 3px solid #c8963e;
+}
+
+.room-status-playing {
+  background: #fef0ee !important;
+  border-left: 3px solid #d46b5c;
+}
+
+.room-status-ended {
+  background: #edf5f0 !important;
+  border-left: 3px solid #5a9e8f;
 }
 
 /* ===== 游戏布局 ===== */
@@ -431,8 +579,8 @@ textarea {
   padding: 16px;
   border-radius: var(--radius-sm);
   margin-bottom: 12px;
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--card);
+  border: 1px solid var(--border);
   border-left: 3px solid transparent;
   transition: all 0.3s;
 }
@@ -478,8 +626,8 @@ textarea {
   padding: 10px;
   margin: 10px 0;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .spectator-info {
@@ -495,8 +643,8 @@ textarea {
   padding: 12px;
   margin: 10px 0;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 .status-message {
@@ -504,7 +652,7 @@ textarea {
   padding: 10px;
   margin: 10px 0;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--card);
 }
 
 .turn-info {
@@ -519,9 +667,9 @@ textarea {
 .waiting-message {
   text-align: center;
   padding: 48px;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--card);
   border-radius: var(--radius);
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
   margin: 20px 0;
 }
 
@@ -539,12 +687,12 @@ textarea {
 .chat-box {
   height: 350px;
   overflow-y: auto;
-  background: rgba(0, 0, 0, 0.025);
+  background: rgba(120, 90, 40, 0.04);
   padding: 12px;
   border-radius: var(--radius-sm);
   margin-bottom: 10px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0,0,0,0.08) transparent;
+  scrollbar-color: var(--border) transparent;
 }
 
 .chat-box::-webkit-scrollbar {
@@ -556,11 +704,11 @@ textarea {
   border-radius: 10px;
 }
 
-.message {
+.chat-message {
   margin-bottom: 6px;
   padding: 6px 10px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card);
   font-size: 0.9em;
   word-break: break-word;
 }
@@ -599,7 +747,7 @@ textarea {
 .victory-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(247, 245, 242, 0.92);
+  background: rgba(238, 232, 223, 0.92);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -608,12 +756,12 @@ textarea {
 }
 
 .victory-content {
-  background: linear-gradient(145deg, #fffef8, #f8f4ed);
+  background: linear-gradient(145deg, #fff8ee, #f5ead6);
   padding: 48px;
   border-radius: var(--radius);
   text-align: center;
   border: 2px solid var(--accent-gold);
-  box-shadow: var(--shadow-lg), 0 0 40px rgba(184, 134, 11, 0.1);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(184, 134, 11, 0.15);
 }
 
 .victory-text {
@@ -638,7 +786,7 @@ textarea {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+  background: rgba(100, 80, 40, 0.20);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -647,13 +795,13 @@ textarea {
 }
 
 .modal-content {
-  background: #ffffff;
+  background: #fdf8f0;
   padding: 28px;
   border-radius: var(--radius);
   color: var(--text);
   min-width: 400px;
   max-width: 600px;
-  border: 1px solid rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow-lg);
 }
 
@@ -725,14 +873,14 @@ textarea {
   width: 100%;
   padding: 10px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(0, 0, 0, 0.025);
+  border: 1px solid var(--border);
+  background: rgba(255, 250, 240, 0.5);
   color: var(--text);
   font-size: 0.9em;
 }
 
 .form-control[readonly] {
-  background: rgba(0, 0, 0, 0.015);
+  background: rgba(255, 250, 240, 0.3);
   cursor: default;
 }
 
@@ -803,7 +951,7 @@ textarea {
 }
 
 .viewer-item:hover {
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--card);
 }
 
 .viewer-info {
@@ -866,8 +1014,8 @@ textarea {
 .data-table th {
   text-align: left;
   padding: 10px 12px;
-  background: rgba(0,0,0,0.025);
-  border-bottom: 2px solid rgba(0,0,0,0.08);
+  background: rgba(160,130,90,0.06);
+  border-bottom: 2px solid var(--border);
   font-size: 0.85em;
   color: var(--text-muted);
   white-space: nowrap;
@@ -875,18 +1023,12 @@ textarea {
 
 .data-table td {
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border);
   font-size: 0.9em;
 }
 
 .data-table tr:hover td {
-  background: rgba(0,0,0,0.015);
-}
-
-.action-buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
+  background: rgba(160,130,90,0.04);
 }
 
 /* ===== 分页 ===== */
@@ -900,8 +1042,8 @@ textarea {
 .pagination button {
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(0,0,0,0.1);
-  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--border);
+  background: var(--card);
   color: var(--text);
   cursor: pointer;
   font-size: 0.85em;
@@ -909,7 +1051,7 @@ textarea {
 }
 
 .pagination button:hover {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-hover);
 }
 
 .pagination button.active {
@@ -920,11 +1062,11 @@ textarea {
 
 /* ===== Chart 容器（admin用） ===== */
 .chart-container {
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--card);
   border-radius: var(--radius);
   padding: 20px;
   margin-top: 20px;
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
 }
 
 .chart-header {
@@ -947,7 +1089,7 @@ textarea {
 }
 
 .summary-card {
-  background: rgba(0, 0, 0, 0.025);
+  background: rgba(160,130,90,0.04);
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   text-align: center;
@@ -974,10 +1116,10 @@ textarea {
 }
 
 .login-container {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--card);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 40px;
   width: 380px;
@@ -1008,7 +1150,7 @@ textarea {
 }
 
 /* ===== 消息提示 ===== */
-.message {
+.toast-message {
   position: fixed;
   top: 20px;
   right: 20px;
@@ -1020,17 +1162,17 @@ textarea {
   animation: slideIn 0.3s ease;
 }
 
-.message.success {
+.toast-message.success {
   background: var(--success);
   color: #fff;
 }
 
-.message.error {
+.toast-message.error {
   background: var(--danger);
   color: #fff;
 }
 
-.message.info {
+.toast-message.info {
   background: var(--primary);
   color: #fff;
 }
@@ -1051,16 +1193,16 @@ textarea {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--border);
   transition: background-color 0.15s;
 }
 
 .ranking-item:hover {
-  background: rgba(0,0,0,0.02);
+  background: rgba(160,130,90,0.06);
 }
 
 .ranking-item.top-3 {
-  background: rgba(184, 134, 11, 0.04);
+  background: rgba(184, 134, 11, 0.06);
 }
 
 .ranking-number {
@@ -1092,14 +1234,75 @@ textarea {
 /* ===== 大厅标题 ===== */
 .lobby-title {
   font-family: 'Noto Serif SC', serif;
-  font-size: 2em;
-  margin-bottom: 24px;
-  padding-bottom: 12px;
+  font-size: 2.2em;
+  margin-bottom: 28px;
+  padding-bottom: 14px;
   border-bottom: 3px solid var(--accent-warm);
   background: linear-gradient(135deg, var(--primary), var(--accent-warm));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  letter-spacing: 0.05em;
+}
+
+/* ===== 大厅装饰区 ===== */
+.lobby-hero {
+  text-align: center;
+  margin-bottom: 32px;
+  position: relative;
+}
+
+.lobby-hero-decor {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.lobby-subtitle {
+  color: var(--text-muted);
+  font-size: 0.95em;
+  margin-top: 4px;
+  letter-spacing: 0.1em;
+}
+
+/* ===== 大厅双栏布局 ===== */
+.lobby-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.lobby-left {
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.section-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.25em;
+  color: var(--primary);
+  margin-bottom: 16px;
+  padding-left: 10px;
+  border-left: 3px solid var(--accent-warm);
+}
+
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-title-row .section-title {
+  margin-bottom: 0;
 }
 
 /* ===== 聊天标题 ===== */
@@ -1134,6 +1337,9 @@ textarea {
   }
   .login-panel, #rankPanel {
     max-width: 100% !important;
+  }
+  .lobby-grid {
+    grid-template-columns: 1fr;
   }
 }
 
