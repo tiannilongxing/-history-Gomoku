@@ -10,9 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 public class BattleServiceImpl implements BattleService {
+
+    // 房间聊天消息缓存：roomId -> 消息列表
+    private static final ConcurrentHashMap<String, CopyOnWriteArrayList<Map<String, Object>>> chatMessages = new ConcurrentHashMap<>();
 
     @Autowired
     private RoomDao roomDao;
@@ -263,9 +268,6 @@ public class BattleServiceImpl implements BattleService {
                         scoreLogDao.insert(scoreLog);
                     }
 
-                    // 删除退出玩家的观战记录（如果存在）
-                    viewerDao.deleteByRoomIdAndUserId(roomId, userId);
-
                     return ResponseEntity.success("您已退出，对手获胜", true);
                 }
             }
@@ -466,6 +468,95 @@ public class BattleServiceImpl implements BattleService {
             lastMove.add(position);
         }
         return lastMove;
+    }
+
+    @Override
+    public ResponseEntity<Boolean> sendChatMessage(String roomId, Integer userId, String message) {
+        try {
+            Room room = roomDao.selectByRoomId(roomId);
+            if (room == null) {
+                return ResponseEntity.error("房间不存在");
+            }
+
+            User user = userDao.selectById(userId);
+            if (user == null) {
+                return ResponseEntity.error("用户不存在");
+            }
+
+            // 判断发送者是否为观战者
+            boolean isViewer = !room.getPlayer1Id().equals(userId)
+                    && (room.getPlayer2Id() == null || !room.getPlayer2Id().equals(userId));
+
+            chatMessages.computeIfAbsent(roomId, k -> new CopyOnWriteArrayList<>());
+
+            Map<String, Object> chatMsg = new HashMap<>();
+            chatMsg.put("sender", user.getNickname());
+            chatMsg.put("message", message);
+            chatMsg.put("timestamp", System.currentTimeMillis());
+            chatMsg.put("isViewer", isViewer);
+
+            CopyOnWriteArrayList<Map<String, Object>> messages = chatMessages.get(roomId);
+            messages.add(chatMsg);
+
+            // 限制每个房间最多保留200条消息
+            while (messages.size() > 200) {
+                messages.remove(0);
+            }
+
+            return ResponseEntity.success("发送成功", true);
+        } catch (Exception e) {
+            return ResponseEntity.error("发送消息失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseEntity<Map<String, Object>> getChatMessages(String roomId, Integer userId, Integer lastIndex) {
+        try {
+            CopyOnWriteArrayList<Map<String, Object>> messages = chatMessages.get(roomId);
+            if (messages == null || messages.isEmpty()) {
+                Map<String, Object> result = new HashMap<>();
+                result.put("messages", new ArrayList<>());
+                result.put("totalIndex", 0);
+                return ResponseEntity.success("获取成功", result);
+            }
+
+            // 判断请求者是否为观战者
+            Room room = roomDao.selectByRoomId(roomId);
+            boolean isViewer = room != null
+                    && !room.getPlayer1Id().equals(userId)
+                    && (room.getPlayer2Id() == null || !room.getPlayer2Id().equals(userId));
+
+            int start = (lastIndex != null && lastIndex >= 0) ? lastIndex : 0;
+            int totalIndex = messages.size();
+            if (start >= messages.size()) {
+                Map<String, Object> result = new HashMap<>();
+                result.put("messages", new ArrayList<>());
+                result.put("totalIndex", totalIndex);
+                return ResponseEntity.success("获取成功", result);
+            }
+
+            List<Map<String, Object>> allNewMessages = new ArrayList<>(messages.subList(start, messages.size()));
+
+            // 玩家看不到观战者消息，观战者可以看到所有消息
+            List<Map<String, Object>> filteredMessages;
+            if (isViewer) {
+                filteredMessages = allNewMessages;
+            } else {
+                filteredMessages = new ArrayList<>();
+                for (Map<String, Object> msg : allNewMessages) {
+                    if (!Boolean.TRUE.equals(msg.get("isViewer"))) {
+                        filteredMessages.add(msg);
+                    }
+                }
+            }
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("messages", filteredMessages);
+            result.put("totalIndex", totalIndex);
+            return ResponseEntity.success("获取成功", result);
+        } catch (Exception e) {
+            return ResponseEntity.error("获取消息失败: " + e.getMessage());
+        }
     }
 
     /**

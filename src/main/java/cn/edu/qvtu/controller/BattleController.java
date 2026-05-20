@@ -140,6 +140,37 @@ public class BattleController {
     }
 
     /**
+     * 发送聊天消息
+     */
+    @PostMapping("/game/chat")
+    public ResponseEntity<Boolean> sendChatMessage(@RequestParam String roomId,
+                                                    @RequestParam Integer userId,
+                                                    @RequestParam String message) {
+        logger.info("收到聊天消息，房间号: {}, 用户ID: {}", roomId, userId);
+        try {
+            return battleService.sendChatMessage(roomId, userId, message);
+        } catch (Exception e) {
+            logger.error("发送聊天消息时发生异常", e);
+            return ResponseEntity.error("发送消息失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取聊天消息
+     */
+    @GetMapping("/game/chatList/{roomId}")
+    public ResponseEntity<Map<String, Object>> getChatMessages(@PathVariable String roomId,
+                                                                @RequestParam Integer userId,
+                                                                @RequestParam(required = false, defaultValue = "0") Integer lastIndex) {
+        try {
+            return battleService.getChatMessages(roomId, userId, lastIndex);
+        } catch (Exception e) {
+            logger.error("获取聊天消息时发生异常", e);
+            return ResponseEntity.error("获取消息失败: " + e.getMessage());
+        }
+    }
+
+    /**
      * 健康检查接口
      */
     @GetMapping("/health")

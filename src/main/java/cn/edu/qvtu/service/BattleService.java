@@ -42,4 +42,10 @@ public interface BattleService {
      * nickname（昵称）、score（积分）；myRank: 当前用户的排名；myScore: 当前用户的积分；
      */
     ResponseEntity<Map<String, Object>> getRankList(Integer userId);
+
+    /** 发送聊天消息 */
+    ResponseEntity<Boolean> sendChatMessage(String roomId, Integer userId, String message);
+
+    /** 获取聊天消息（从lastIndex开始，根据userId过滤观战者消息，返回messages+totalIndex） */
+    ResponseEntity<Map<String, Object>> getChatMessages(String roomId, Integer userId, Integer lastIndex);
 }
