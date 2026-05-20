@@ -46,6 +46,11 @@
         WHERE room_id = #{roomId} AND user_id = #{userId}
     </delete>
 
+    <!-- 根据房间号删除所有观战记录 -->
+    <delete id="deleteByRoomId">
+        DELETE FROM viewer WHERE room_id = #{roomId}
+    </delete>
+
     <!-- 查询房间的详细观战记录 -->
     <select id="selectViewerDetailsByRoomId" resultType="map">
         SELECT

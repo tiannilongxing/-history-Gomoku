@@ -59,6 +59,11 @@ public interface ManageService {
      */
     ResponseEntity<Map<String, Object>> getRoomDetail(String roomId);
 
+    /**
+     * 删除对战房间（级联删除关联数据）
+     */
+    ResponseEntity<Boolean> deleteRoom(String roomId);
+
     // ============ 积分管理 ============
 
     /**

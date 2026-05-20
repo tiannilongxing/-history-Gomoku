@@ -17,16 +17,19 @@
   <div class="float-piece float-black float-5"></div>
 </div>
 <!-- 用户信息栏 -->
-<div id="userInfoBar" class="user-info hidden">
-  <div>
-    <strong>欢迎，<span id="userNickname"></span></strong>
-    <span>积分: <span id="userScore">0</span></span>
-  </div>
-  <div class="user-actions">
-    <button id="updateNicknameBtn" class="btn">修改昵称</button>
-    <button id="updatePasswordBtn" class="btn">修改密码</button>
-    <button id="rankBtn" class="btn">排行榜</button>
-    <button id="logoutBtn" class="btn btn-danger">退出登录</button>
+<div id="userInfoBarWrapper" class="user-info-bar-wrapper hidden">
+  <div class="user-info-trigger"></div>
+  <div id="userInfoBar" class="user-info" style="width: 80%;">
+    <div>
+      <strong>欢迎，<span id="userNickname"></span></strong>
+      <span>积分: <span id="userScore">0</span></span>
+    </div>
+    <div class="user-actions">
+      <button id="updateNicknameBtn" class="btn">修改昵称</button>
+      <button id="updatePasswordBtn" class="btn">修改密码</button>
+      <button id="rankBtn" class="btn">排行榜</button>
+      <button id="logoutBtn" class="btn btn-danger">退出登录</button>
+    </div>
   </div>
 </div>
 

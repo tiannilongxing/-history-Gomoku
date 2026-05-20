@@ -114,6 +114,15 @@ public class ManageController {
         return manageService.getRoomDetail(roomId);
     }
 
+    /**
+     * 删除对战房间
+     * DELETE /manage/room/{roomId}
+     */
+    @DeleteMapping("/room/{roomId}")
+    public ResponseEntity<Boolean> deleteRoom(@PathVariable String roomId) {
+        return manageService.deleteRoom(roomId);
+    }
+
     // ============ 积分管理接口 ============
 
     /**

@@ -345,6 +345,33 @@ public class ManageServiceImpl implements ManageService {
     }
 
     @Override
+    @Transactional
+    public ResponseEntity<Boolean> deleteRoom(String roomId) {
+        try {
+            if (!StringUtils.hasText(roomId)) {
+                return ResponseEntity.error("房间号不能为空");
+            }
+
+            Room room = roomDao.selectByRoomId(roomId);
+            if (room == null) {
+                return ResponseEntity.error("房间不存在");
+            }
+
+            // 级联删除：先删除棋盘记录
+            chessboardDao.deleteByRoomId(roomId);
+            // 级联删除：删除观战记录
+            viewerDao.deleteByRoomId(roomId);
+            // 删除房间
+            roomDao.deleteByRoomId(roomId);
+
+            return ResponseEntity.success("删除房间成功", true);
+        } catch (Exception e) {
+            log.error("删除房间失败: {}", e.getMessage(), e);
+            return ResponseEntity.error("删除房间失败: " + e.getMessage());
+        }
+    }
+
+    @Override
     public ResponseEntity<Map<String, Object>> getRoomDetail(String roomId) {
         try {
             if (!StringUtils.hasText(roomId)) {

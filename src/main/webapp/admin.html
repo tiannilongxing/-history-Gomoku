@@ -1,554 +1,324 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../css/admin.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五子棋对战平台 - 管理员后台</title>
-    <!-- 引入 Chart.js 用于图表展示 -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* 原有的样式保持不变，新增样式 */
-
-        /* 图表容器样式 */
-        .chart-container {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .chart-header {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .chart-header h3 {
-            color: #333;
-            font-size: 18px;
-            margin: 0;
-        }
-
-        .chart-wrapper {
-            height: 300px;
-            position: relative;
-        }
-
-        /* 统计卡片样式 */
-        .stats-summary {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .summary-card {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .summary-card h4 {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-card .value {
-            color: #1a2a6c;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        /* 观战记录样式 */
-        .viewer-list-container {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #e9ecef;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .viewer-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .viewer-item:last-child {
-            border-bottom: none;
-        }
-
-        .viewer-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .viewer-avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .viewer-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .viewer-name {
-            font-weight: 500;
-            color: #333;
-        }
-
-        .viewer-time {
-            font-size: 12px;
-            color: #6c757d;
-        }
-
-        .viewer-score {
-            color: #28a745;
-            font-weight: bold;
-        }
-
-        /* 表格操作按钮样式 */
-        .action-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .action-dropdown-btn {
-            background: #1a2a6c;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .action-dropdown-content {
-            display: none;
-            position: absolute;
-            background: white;
-            min-width: 120px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 4px;
-            z-index: 1;
-            right: 0;
-            margin-top: 5px;
-        }
-
-        .action-dropdown-content a {
-            color: #333;
-            padding: 8px 12px;
-            text-decoration: none;
-            display: block;
-            border-bottom: 1px solid #f8f9fa;
-        }
-
-        .action-dropdown-content a:last-child {
-            border-bottom: none;
-        }
-
-        .action-dropdown-content a:hover {
-            background: #f8f9fa;
-        }
-
-        .action-dropdown:hover .action-dropdown-content {
-            display: block;
-        }
-
-        /* 时间选择器样式 */
-        .date-range-picker {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .date-range-picker input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        /* 响应式调整 */
-        @media (max-width: 768px) {
-            .stats-summary {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .chart-wrapper {
-                height: 250px;
-            }
-
-            .date-range-picker {
-                flex-direction: column;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .stats-summary {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* 模态框动画 */
-        @keyframes modalSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-content {
-            animation: modalSlideUp 0.3s ease-out;
-        }
-    </style>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../css/admin.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五子棋对战平台 - 管理员后台</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* ========== 页面内嵌增强样式 ========== */
+.chart-container { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.chart-header { margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+.chart-header h3 { color: #333; font-size: 18px; margin: 0; }
+.chart-wrapper { height: 300px; position: relative; }
+.viewer-list-container { max-height: 400px; overflow-y: auto; border: 1px solid #e9ecef; border-radius: 5px; margin-bottom: 15px; }
+.viewer-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: 1px solid #f8f9fa; }
+.viewer-item:last-child { border-bottom: none; }
+.viewer-info { display: flex; align-items: center; gap: 10px; }
+.viewer-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, #4a6cf7, #6c5ce7); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+.viewer-details { display: flex; flex-direction: column; }
+.viewer-name { font-weight: 500; color: #333; }
+.viewer-time { font-size: 12px; color: #6c757d; }
+.viewer-score { color: #28a745; font-weight: bold; }
+.date-range-picker { display: flex; gap: 10px; align-items: center; margin-bottom: 20px; }
+.date-range-picker input { padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+@keyframes modalSlideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+.modal-content { animation: modalSlideUp 0.3s ease-out; }
+@media (max-width: 768px) { .stats-summary { grid-template-columns: repeat(2, 1fr); } .chart-wrapper { height: 250px; } .date-range-picker { flex-direction: column; } }
+@media (max-width: 576px) { .stats-summary { grid-template-columns: 1fr; } }
+</style>
 </head>
 <body>
-<!-- 登录页面 -->
+
+<!-- ===== 登录页面 ===== -->
 <div class="login-container" id="loginPage">
-    <div class="login-header">
-        <h1>五子棋对战平台</h1>
-        <p>管理员登录系统</p>
+  <div class="login-deco">
+    <div class="deco-piece deco-black" style="top:12%;left:8%"></div>
+    <div class="deco-piece deco-white" style="top:18%;right:12%"></div>
+    <div class="deco-piece deco-black" style="bottom:15%;left:15%"></div>
+    <div class="deco-piece deco-white" style="bottom:10%;right:8%"></div>
+  </div>
+
+  <div class="login-header">
+    <div class="login-logo-icon">
+      <!-- 精致五子棋棋盘logo -->
+      <svg viewBox="0 0 56 56" width="56" height="56" fill="none">
+        <rect x="4" y="4" width="48" height="48" rx="8" fill="#f0f4ff" stroke="#4a6cf7" stroke-width="1.5"/>
+        <line x1="14" y1="4" x2="14" y2="52" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="24" y1="4" x2="24" y2="52" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="34" y1="4" x2="34" y2="52" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="44" y1="4" x2="44" y2="52" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="4" y1="14" x2="52" y2="14" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="4" y1="24" x2="52" y2="24" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="4" y1="34" x2="52" y2="34" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <line x1="4" y1="44" x2="52" y2="44" stroke="#4a6cf7" stroke-width="0.6" opacity="0.4"/>
+        <circle cx="24" cy="24" r="7" fill="url(#loginBk)"/>
+        <circle cx="34" cy="34" r="7" fill="white" stroke="#c8d0e8" stroke-width="0.8"/>
+        <circle cx="14" cy="44" r="6" fill="url(#loginBk2)"/>
+        <circle cx="44" cy="14" r="6" fill="white" stroke="#c8d0e8" stroke-width="0.8"/>
+        <circle cx="34" cy="14" r="5.5" fill="url(#loginBk3)"/>
+        <defs>
+          <radialGradient id="loginBk" cx="35%" cy="30%"><stop offset="0%" stop-color="#5a5a6e"/><stop offset="100%" stop-color="#1a1a2e"/></radialGradient>
+          <radialGradient id="loginBk2" cx="35%" cy="30%"><stop offset="0%" stop-color="#5a5a6e"/><stop offset="100%" stop-color="#1a1a2e"/></radialGradient>
+          <radialGradient id="loginBk3" cx="35%" cy="30%"><stop offset="0%" stop-color="#5a5a6e"/><stop offset="100%" stop-color="#1a1a2e"/></radialGradient>
+        </defs>
+      </svg>
     </div>
+    <h1>五子棋对战平台</h1>
+    <p>管理员登录系统</p>
+  </div>
 
-    <form id="loginForm">
-        <div class="form-group">
-            <label for="username">管理员账号</label>
-            <input type="text" id="username" class="form-control" placeholder="请输入管理员账号" required>
-        </div>
-
-        <div class="form-group">
-            <label for="password">密码</label>
-            <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
-        </div>
-
-        <button type="submit" class="login-btn">登录</button>
-
-        <div id="message" class="message"></div>
-    </form>
-
-    <div class="footer">
-        &copy; 2024 五子棋对战平台 v2.0
+  <form id="loginForm">
+    <div class="form-group">
+      <label for="username">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        管理员账号
+      </label>
+      <input type="text" id="username" class="form-control" placeholder="请输入管理员账号" required>
     </div>
+    <div class="form-group">
+      <label for="password">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        密码
+      </label>
+      <input type="password" id="password" class="form-control" placeholder="请输入密码" required>
+    </div>
+    <button type="submit" class="login-btn">登录</button>
+    <div id="message" class="message"></div>
+  </form>
+
+  <div class="footer">
+    <span class="footer-chess">&#9817;</span> 2024 五子棋对战平台 v2.0
+  </div>
 </div>
 
-<!-- 管理员后台主页面 -->
+<!-- ===== 管理员后台主页面 ===== -->
 <div class="admin-container" id="adminPage">
-    <div class="admin-header">
-        <div class="logo">五子棋对战平台 - 管理员后台</div>
-        <div class="user-info">
-            <span id="adminName">管理员</span>
-            <button class="logout-btn" onclick="logout()">退出登录</button>
-        </div>
+  <header class="admin-header">
+    <div class="logo">
+      <!-- 顶栏logo: 小型棋盘+棋子 -->
+      <svg class="logo-svg" viewBox="0 0 28 28" width="28" height="28" fill="none">
+        <rect x="1" y="1" width="26" height="26" rx="5" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>
+        <line x1="8" y1="1" x2="8" y2="27" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <line x1="15" y1="1" x2="15" y2="27" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <line x1="22" y1="1" x2="22" y2="27" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <line x1="1" y1="8" x2="27" y2="8" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <line x1="1" y1="15" x2="27" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <line x1="1" y1="22" x2="27" y2="22" stroke="rgba(255,255,255,0.15)" stroke-width="0.4"/>
+        <circle cx="8" cy="8" r="4.5" fill="url(#hdrBk)"/>
+        <circle cx="15" cy="15" r="4.5" fill="white" fill-opacity="0.9"/>
+        <circle cx="22" cy="22" r="3.5" fill="url(#hdrBk2)"/>
+        <defs>
+          <radialGradient id="hdrBk" cx="35%" cy="30%"><stop offset="0%" stop-color="#666"/><stop offset="100%" stop-color="#222"/></radialGradient>
+          <radialGradient id="hdrBk2" cx="35%" cy="30%"><stop offset="0%" stop-color="#666"/><stop offset="100%" stop-color="#222"/></radialGradient>
+        </defs>
+      </svg>
+      <span>五子棋对战平台 - 管理员后台</span>
     </div>
-
-    <div class="admin-layout">
-        <!-- 侧边栏 -->
-        <div class="sidebar">
-            <div class="sidebar-item active" onclick="showSection('dashboard')">
-                <span>📊 数据统计</span>
-            </div>
-            <div class="sidebar-item" onclick="showSection('users')">
-                <span>👥 用户管理</span>
-            </div>
-            <div class="sidebar-item" onclick="showSection('rooms')">
-                <span>🎮 对战管理</span>
-            </div>
-            <div class="sidebar-item" onclick="showSection('scores')">
-                <span>💰 积分管理</span>
-            </div>
-            <div class="sidebar-item" onclick="showSection('admins')">
-                <span>🛡️ 管理员管理</span>
-            </div>
-            <div class="sidebar-item" onclick="showSection('stats')">
-                <span>📈 详细统计</span>
-            </div>
-        </div>
-
-        <!-- 主内容区 -->
-        <div class="main-content">
-            <!-- 数据统计 -->
-            <div class="content-section active" id="dashboardSection">
-                <div class="section-header">
-                    <h2>数据统计</h2>
-                    <button class="btn btn-primary" onclick="refreshDashboard()">
-                        🔄 刷新数据
-                    </button>
-                </div>
-
-                <div class="stats-grid" id="statsGrid">
-                    <!-- 统计数据动态生成 -->
-                </div>
-
-                <div class="stats-summary">
-                    <div class="summary-card">
-                        <h4>在线用户</h4>
-                        <div class="value" id="onlineUsers">0</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>进行中对局</h4>
-                        <div class="value" id="activeRooms">0</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>今日新增用户</h4>
-                        <div class="value" id="todayNewUsers">0</div>
-                    </div>
-                    <div class="summary-card">
-                        <h4>今日对局数</h4>
-                        <div class="value" id="todayBattles">0</div>
-                    </div>
-                </div>
-
-                <div class="rankings-list" id="rankingsList">
-                    <h3>积分排行榜</h3>
-                    <!-- 排行榜动态生成 -->
-                </div>
-            </div>
-
-            <!-- 用户管理 -->
-            <div class="content-section" id="usersSection">
-                <div class="section-header">
-                    <h2>用户管理</h2>
-                    <button class="btn btn-success" onclick="showAddUserModal()">添加用户</button>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="userSearch" placeholder="搜索用户名或昵称">
-                    <select id="userStatusFilter">
-                        <option value="">所有状态</option>
-                        <option value="1">正常</option>
-                        <option value="0">禁用</option>
-                    </select>
-                    <button onclick="searchUsers()">搜索</button>
-                    <button class="btn btn-info" onclick="exportUsers()">导出Excel</button>
-                </div>
-
-                <div class="data-table">
-                    <table id="usersTable">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>用户名</th>
-                            <th>昵称</th>
-                            <th>积分</th>
-                            <th>状态</th>
-                            <th>注册时间</th>
-                            <th>最后登录</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                        <!-- 用户数据动态生成 -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination" id="usersPagination">
-                    <!-- 分页按钮动态生成 -->
-                </div>
-            </div>
-
-            <!-- 对战管理 -->
-            <div class="content-section" id="roomsSection">
-                <div class="section-header">
-                    <h2>对战管理</h2>
-                    <button class="btn btn-info" onclick="cleanupTimeoutRooms()">清理超时房间</button>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="roomSearch" placeholder="搜索房间号">
-                    <select id="roomStatusFilter">
-                        <option value="">所有状态</option>
-                        <option value="0">等待中</option>
-                        <option value="1">游戏中</option>
-                        <option value="2">已结束</option>
-                    </select>
-                    <select id="roomWinnerFilter">
-                        <option value="">获胜方</option>
-                        <option value="1">玩家1</option>
-                        <option value="2">玩家2</option>
-                    </select>
-                    <button onclick="searchRooms()">搜索</button>
-                </div>
-
-                <div class="data-table">
-                    <table id="roomsTable">
-                        <thead>
-                        <tr>
-                            <th>房间号</th>
-                            <th>玩家1</th>
-                            <th>玩家2</th>
-                            <th>状态</th>
-                            <th>获胜方</th>
-                            <th>创建时间</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody id="roomsTableBody">
-                        <!-- 房间数据动态生成 -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination" id="roomsPagination">
-                    <!-- 分页按钮动态生成 -->
-                </div>
-            </div>
-
-            <!-- 积分管理 -->
-            <div class="content-section" id="scoresSection">
-                <div class="section-header">
-                    <h2>积分管理</h2>
-                    <button class="btn btn-success" onclick="showAddScoreModal()">添加积分记录</button>
-                </div>
-
-                <div class="search-bar">
-                    <input type="text" id="scoreUserSearch" placeholder="搜索用户ID或昵称">
-                    <input type="text" id="scoreReasonSearch" placeholder="搜索变动原因">
-                    <input type="date" id="scoreStartDate" placeholder="开始日期">
-                    <input type="date" id="scoreEndDate" placeholder="结束日期">
-                    <button onclick="searchScores()">搜索</button>
-                </div>
-
-                <div class="data-table">
-                    <table id="scoresTable">
-                        <thead>
-                        <tr>
-                            <th>记录ID</th>
-                            <th>用户ID</th>
-                            <th>用户名</th>
-                            <th>变动积分</th>
-                            <th>变动原因</th>
-                            <th>变动时间</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody id="scoresTableBody">
-                        <!-- 积分记录数据动态生成 -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="pagination" id="scoresPagination">
-                    <!-- 分页按钮动态生成 -->
-                </div>
-            </div>
-
-            <!-- 管理员管理 -->
-            <div class="content-section" id="adminsSection">
-                <div class="section-header">
-                    <h2>管理员管理</h2>
-                    <button class="btn btn-success" onclick="showAddAdminModal()">添加管理员</button>
-                </div>
-
-                <div class="data-table">
-                    <table id="adminsTable">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>用户名</th>
-                            <th>昵称</th>
-                            <th>角色</th>
-                            <th>状态</th>
-                            <th>最后登录</th>
-                            <th>创建时间</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody id="adminsTableBody">
-                        <!-- 管理员数据动态生成 -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 详细统计 -->
-            <div class="content-section" id="statsSection">
-                <div class="section-header">
-                    <h2>详细统计分析</h2>
-                    <button class="btn btn-primary" onclick="loadRecentWeekStats()">
-                        🔄 刷新统计
-                    </button>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>近七日对战统计</h3>
-                        <div class="stats-summary">
-                            <div class="summary-card">
-                                <h4>总房间数</h4>
-                                <div class="value" id="totalRooms7Days">0</div>
-                            </div>
-                            <div class="summary-card">
-                                <h4>总观战人数</h4>
-                                <div class="value" id="totalViewers7Days">0</div>
-                            </div>
-                            <div class="summary-card">
-                                <h4>总对局数</h4>
-                                <div class="value" id="totalGames7Days">0</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chart-wrapper">
-                        <canvas id="weekStatsChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-container">
-                    <div class="chart-header">
-                        <h3>观战记录查询</h3>
-                        <div class="search-bar">
-                            <input type="text" id="viewerRoomSearch" placeholder="输入房间号">
-                            <button onclick="loadRoomViewerDetails()">查询观战记录</button>
-                        </div>
-                    </div>
-                    <div id="viewerDetailsContent">
-                        <p class="text-muted text-center">请输入房间号查询观战记录</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="user-info">
+      <div class="admin-avatar" id="adminAvatar">管</div>
+      <span id="adminName">管理员</span>
+      <button class="logout-btn" onclick="logout()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        退出登录
+      </button>
     </div>
+  </header>
 
-    <!-- 模态框容器 -->
-    <div class="modal-overlay" id="modalOverlay">
-        <div class="modal-content" id="modalContent">
-            <!-- 模态框内容动态生成 -->
+  <div class="admin-layout">
+    <nav class="sidebar" aria-label="管理导航">
+      <div class="sidebar-brand">
+        <!-- 侧边栏品牌logo -->
+        <svg viewBox="0 0 40 40" width="36" height="36" fill="none">
+          <rect width="40" height="40" rx="10" fill="url(#sbBg)"/>
+          <line x1="10" y1="4" x2="10" y2="36" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <line x1="20" y1="4" x2="20" y2="36" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <line x1="30" y1="4" x2="30" y2="36" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <line x1="4" y1="10" x2="36" y2="10" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <line x1="4" y1="20" x2="36" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <line x1="4" y1="30" x2="36" y2="30" stroke="rgba(255,255,255,0.2)" stroke-width="0.6"/>
+          <circle cx="10" cy="10" r="5" fill="url(#sbBk)"/>
+          <circle cx="20" cy="20" r="5" fill="white" fill-opacity="0.9"/>
+          <circle cx="30" cy="30" r="4" fill="url(#sbBk2)"/>
+          <defs>
+            <linearGradient id="sbBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a6cf7"/><stop offset="100%" stop-color="#6c5ce7"/></linearGradient>
+            <radialGradient id="sbBk" cx="35%" cy="30%"><stop offset="0%" stop-color="#555"/><stop offset="100%" stop-color="#111"/></radialGradient>
+            <radialGradient id="sbBk2" cx="35%" cy="30%"><stop offset="0%" stop-color="#555"/><stop offset="100%" stop-color="#111"/></radialGradient>
+          </defs>
+        </svg>
+        <span>管理面板</span>
+      </div>
+
+      <div class="sidebar-item active" onclick="showSection('dashboard')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>数据统计</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('users')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>用户管理</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('rooms')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4"/><path d="M14 12h4"/><circle cx="8" cy="16" r="1"/><circle cx="16" cy="16" r="1"/></svg>
+        <span>对战管理</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('scores')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        <span>积分管理</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('admins')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>管理员管理</span>
+      </div>
+      <div class="sidebar-item" onclick="showSection('stats')">
+        <svg class="sidebar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>详细统计</span>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-deco-line"></div>
+        <div class="sidebar-version">v2.0</div>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="breadcrumb" id="breadcrumb">
+        <span class="breadcrumb-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </span>
+        <span>首页</span>
+        <span class="breadcrumb-sep">/</span>
+        <span id="breadcrumbCurrent">数据统计</span>
+      </div>
+
+      <section class="content-section active" id="dashboardSection">
+        <div class="section-header">
+          <h2>数据统计</h2>
+          <button class="btn btn-primary" onclick="refreshDashboard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            刷新数据
+          </button>
         </div>
-    </div>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="stats-summary">
+          <div class="summary-card"><h4>在线用户</h4><div class="value" id="onlineUsers">0</div></div>
+          <div class="summary-card"><h4>进行中对局</h4><div class="value" id="activeRooms">0</div></div>
+          <div class="summary-card"><h4>今日新增用户</h4><div class="value" id="todayNewUsers">0</div></div>
+          <div class="summary-card"><h4>今日对局数</h4><div class="value" id="todayBattles">0</div></div>
+        </div>
+        <div class="rankings-list" id="rankingsList"><h3>积分排行榜</h3></div>
+      </section>
 
-    <!-- 加载动画 -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading"></div>
-        <span style="margin-left: 10px; color: #1a2a6c;">加载中...</span>
-    </div>
+      <section class="content-section" id="usersSection">
+        <div class="section-header">
+          <h2>用户管理</h2>
+          <button class="btn btn-success" onclick="showAddUserModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加用户
+          </button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="userSearch" placeholder="搜索用户名或昵称">
+          <select id="userStatusFilter"><option value="">所有状态</option><option value="1">正常</option><option value="0">禁用</option></select>
+          <button onclick="searchUsers()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索</button>
+          <button class="btn btn-info" onclick="exportUsers()">导出Excel</button>
+        </div>
+        <div class="data-table"><table id="usersTable"><thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>积分</th><th>状态</th><th>注册时间</th><th>最后登录</th><th>操作</th></tr></thead><tbody id="usersTableBody"></tbody></table></div>
+        <div class="pagination" id="usersPagination"></div>
+      </section>
+
+      <section class="content-section" id="roomsSection">
+        <div class="section-header">
+          <h2>对战管理</h2>
+          <button class="btn btn-info" onclick="cleanupTimeoutRooms()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            清理超时房间
+          </button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="roomSearch" placeholder="搜索房间号">
+          <select id="roomStatusFilter"><option value="">所有状态</option><option value="0">等待中</option><option value="1">游戏中</option><option value="2">已结束</option></select>
+          <select id="roomWinnerFilter"><option value="">获胜方</option><option value="1">玩家1</option><option value="2">玩家2</option></select>
+          <button onclick="searchRooms()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索</button>
+        </div>
+        <div class="data-table"><table id="roomsTable"><thead><tr><th>房间号</th><th>玩家1</th><th>玩家2</th><th>状态</th><th>获胜方</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="roomsTableBody"></tbody></table></div>
+        <div class="pagination" id="roomsPagination"></div>
+      </section>
+
+      <section class="content-section" id="scoresSection">
+        <div class="section-header">
+          <h2>积分管理</h2>
+          <button class="btn btn-success" onclick="showAddScoreModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加积分记录
+          </button>
+        </div>
+        <div class="search-bar">
+          <input type="text" id="scoreUserSearch" placeholder="搜索用户ID或昵称">
+          <input type="text" id="scoreReasonSearch" placeholder="搜索变动原因">
+          <input type="date" id="scoreStartDate" placeholder="开始日期">
+          <input type="date" id="scoreEndDate" placeholder="结束日期">
+          <button onclick="searchScores()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索</button>
+        </div>
+        <div class="data-table"><table id="scoresTable"><thead><tr><th>记录ID</th><th>用户ID</th><th>用户名</th><th>变动积分</th><th>变动原因</th><th>变动时间</th><th>操作</th></tr></thead><tbody id="scoresTableBody"></tbody></table></div>
+        <div class="pagination" id="scoresPagination"></div>
+      </section>
+
+      <section class="content-section" id="adminsSection">
+        <div class="section-header">
+          <h2>管理员管理</h2>
+          <button class="btn btn-success" onclick="showAddAdminModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            添加管理员
+          </button>
+        </div>
+        <div class="data-table"><table id="adminsTable"><thead><tr><th>ID</th><th>用户名</th><th>昵称</th><th>角色</th><th>状态</th><th>最后登录</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="adminsTableBody"></tbody></table></div>
+      </section>
+
+      <section class="content-section" id="statsSection">
+        <div class="section-header">
+          <h2>详细统计分析</h2>
+          <button class="btn btn-primary" onclick="loadRecentWeekStats()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            刷新统计
+          </button>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><h3>近七日对战统计</h3>
+            <div class="stats-summary">
+              <div class="summary-card"><h4>总房间数</h4><div class="value" id="totalRooms7Days">0</div></div>
+              <div class="summary-card"><h4>总观战人数</h4><div class="value" id="totalViewers7Days">0</div></div>
+              <div class="summary-card"><h4>总对局数</h4><div class="value" id="totalGames7Days">0</div></div>
+            </div>
+          </div>
+          <div class="chart-wrapper"><canvas id="weekStatsChart"></canvas></div>
+        </div>
+        <div class="chart-container">
+          <div class="chart-header"><h3>观战记录查询</h3>
+            <div class="search-bar"><input type="text" id="viewerRoomSearch" placeholder="输入房间号"><button onclick="loadRoomViewerDetails()">查询观战记录</button></div>
+          </div>
+          <div id="viewerDetailsContent"><p class="text-muted text-center">请输入房间号查询观战记录</p></div>
+        </div>
+      </section>
+
+      <footer class="content-footer">
+        <div class="footer-deco-line"></div>
+        <p>&#9817; 五子棋对战平台 管理员后台 &copy; 2024 v2.0</p>
+      </footer>
+    </main>
+  </div>
 </div>
+
+<div class="modal-overlay" id="modalOverlay"><div class="modal-content" id="modalContent"></div></div>
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner">
+    <div class="loading-piece loading-black"></div>
+    <div class="loading-piece loading-white"></div>
+  </div>
+  <span style="margin-left: 10px; color: #4a6cf7; font-weight: 500;">加载中...</span>
+</div>
+
 <script src="../js/admin.js"></script>
 </body>
 </html>

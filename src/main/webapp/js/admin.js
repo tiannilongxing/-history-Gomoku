@@ -101,6 +101,8 @@ async function login() {
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'block';
                 document.getElementById('adminName').textContent = currentAdmin.nickname;
+          var avatarEl = document.getElementById('adminAvatar');
+          if (avatarEl) avatarEl.textContent = currentAdmin.nickname ? currentAdmin.nickname.charAt(0) : '管';
 
                 // 加载数据统计
                 loadDashboard();
@@ -159,6 +161,8 @@ async function checkLoginStatus() {
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('adminPage').style.display = 'block';
                 document.getElementById('adminName').textContent = currentAdmin.nickname;
+          var avatarEl2 = document.getElementById('adminAvatar');
+          if (avatarEl2) avatarEl2.textContent = currentAdmin.nickname ? currentAdmin.nickname.charAt(0) : '管';
 
                 // 加载数据统计
                 loadDashboard();
@@ -185,6 +189,18 @@ function showSection(sectionId) {
     document.getElementById(sectionId + 'Section').classList.add('active');
 
     currentSection = sectionId;
+
+    // 更新面包屑
+    var sectionNames = {
+        dashboard: '数据统计',
+        users: '用户管理',
+        rooms: '对战管理',
+        scores: '积分管理',
+        admins: '管理员管理',
+        stats: '详细统计'
+    };
+    var breadcrumbEl = document.getElementById('breadcrumbCurrent');
+    if (breadcrumbEl) breadcrumbEl.textContent = sectionNames[sectionId] || sectionId;
 
     // 加载对应区域的数据
     switch(sectionId) {
@@ -803,6 +819,9 @@ async function loadRooms(page = 1) {
                                     <button class="btn btn-info btn-small" onclick="loadRoomViewerDetailsForRoom('${room.roomId}')">
                                         <span>👥 观战记录</span>
                                     </button>
+            <button class="btn btn-danger btn-small" onclick="deleteRoom('${room.roomId}')">
+              <span>🗑️ 删除</span>
+            </button>
                                 </div>
                             </td>
                         </tr>
@@ -849,6 +868,33 @@ async function cleanupTimeoutRooms() {
     } catch (error) {
         console.error('清理超时房间失败:', error);
         showMessage('清理功能暂时不可用', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function deleteRoom(roomId) {
+    if (!confirm(`确定要删除房间 ${roomId} 吗？此操作将同时删除该房间的棋盘记录和观战记录，不可恢复！`)) {
+        return;
+    }
+
+    showLoading();
+    try {
+        const response = await fetch(`${API_BASE}/manage/room/${encodeURIComponent(roomId)}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.state) {
+            showMessage('删除房间成功', 'success');
+            loadRooms(currentRoomPage);
+        } else {
+            showMessage(result.msg || '删除房间失败', 'error');
+        }
+    } catch (error) {
+        console.error('删除房间失败:', error);
+        showMessage('删除房间失败', 'error');
     } finally {
         hideLoading();
     }

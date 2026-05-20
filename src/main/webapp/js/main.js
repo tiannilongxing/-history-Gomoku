@@ -24,7 +24,7 @@ class MainApp {
     document.getElementById('registerPanel').classList.add('hidden');
     document.getElementById('mainLobbyPanel').classList.add('hidden');
     document.getElementById('rankPanel').classList.add('hidden');
-    document.getElementById('userInfoBar').classList.add('hidden');
+    document.getElementById('userInfoBarWrapper').classList.add('hidden');
   }
 
   showRegisterPanel() {
@@ -32,7 +32,7 @@ class MainApp {
     document.getElementById('registerPanel').classList.remove('hidden');
     document.getElementById('mainLobbyPanel').classList.add('hidden');
     document.getElementById('rankPanel').classList.add('hidden');
-    document.getElementById('userInfoBar').classList.add('hidden');
+    document.getElementById('userInfoBarWrapper').classList.add('hidden');
   }
 
   showMainLobby() {
@@ -40,7 +40,7 @@ class MainApp {
     document.getElementById('registerPanel').classList.add('hidden');
     document.getElementById('mainLobbyPanel').classList.remove('hidden');
     document.getElementById('rankPanel').classList.add('hidden');
-    document.getElementById('userInfoBar').classList.remove('hidden');
+    document.getElementById('userInfoBarWrapper').classList.remove('hidden');
 
     // 更新用户信息
     document.getElementById('userNickname').textContent = this.currentUser.nickname;

@@ -33,5 +33,10 @@
         WHERE room_id = #{roomId}
         ORDER BY update_time DESC
     </select>
+
+    <!-- 根据房间号删除棋盘记录 -->
+    <delete id="deleteByRoomId">
+        DELETE FROM chessboard WHERE room_id = #{roomId}
+    </delete>
 </mapper>
 

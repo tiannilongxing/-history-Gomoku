@@ -15,6 +15,11 @@ public interface ViewerDao {
     int countByRoomId(@Param("roomId") String roomId);
     int deleteByRoomIdAndUserId(@Param("roomId") String roomId, @Param("userId") Integer userId);
 
+    /**
+     * 根据房间号删除所有观战记录
+     */
+    int deleteByRoomId(@Param("roomId") String roomId);
+
     // 新增方法：统计总观战人次
     Integer countTotalViewers();
 
