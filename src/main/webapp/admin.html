@@ -238,7 +238,7 @@
         <div class="search-bar">
           <input type="text" id="roomSearch" placeholder="搜索房间号">
           <select id="roomStatusFilter"><option value="">所有状态</option><option value="0">等待中</option><option value="1">游戏中</option><option value="2">已结束</option></select>
-          <select id="roomWinnerFilter"><option value="">获胜方</option><option value="1">玩家1</option><option value="2">玩家2</option></select>
+          <input type="text" id="roomPlayerNameFilter" placeholder="玩家昵称">
           <button onclick="searchRooms()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> 搜索</button>
         </div>
         <div class="data-table"><table id="roomsTable"><thead><tr><th>房间号</th><th>玩家1</th><th>玩家2</th><th>状态</th><th>获胜方</th><th>创建时间</th><th>操作</th></tr></thead><tbody id="roomsTableBody"></tbody></table></div>
@@ -319,6 +319,16 @@
   <span style="margin-left: 10px; color: #4a6cf7; font-weight: 500;">加载中...</span>
 </div>
 
-<script src="../js/admin.js"></script>
+<script src="../js/admin-config.js"></script>
+<script src="../js/admin-utils.js"></script>
+<script src="../js/admin-auth.js"></script>
+<script src="../js/admin-nav.js"></script>
+<script src="../js/admin-dashboard.js"></script>
+<script src="../js/admin-users.js"></script>
+<script src="../js/admin-rooms.js"></script>
+<script src="../js/admin-scores.js"></script>
+<script src="../js/admin-admins.js"></script>
+<script src="../js/admin-stats.js"></script>
+<script src="../js/admin-override.js"></script>
 </body>
 </html>

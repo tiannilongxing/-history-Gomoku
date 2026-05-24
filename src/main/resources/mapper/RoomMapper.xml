@@ -63,10 +63,16 @@
             <if test="roomId != null and roomId != ''">
                 AND room_id LIKE CONCAT('%', #{roomId}, '%')
             </if>
-            <if test="player1Id != null">
+            <if test="player1Id != null and player2Id != null and player1Id == player2Id">
+                AND (player1_id = #{player1Id} OR player2_id = #{player2Id})
+            </if>
+            <if test="player1Id != null and player2Id != null and player1Id != player2Id">
+                AND (player1_id = #{player1Id} OR player2_id = #{player2Id})
+            </if>
+            <if test="player1Id != null and player2Id == null">
                 AND player1_id = #{player1Id}
             </if>
-            <if test="player2Id != null">
+            <if test="player1Id == null and player2Id != null">
                 AND player2_id = #{player2Id}
             </if>
             <if test="status != null">

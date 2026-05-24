@@ -17,7 +17,7 @@
 
 **文件**：`src/main/java/cn/edu/qvtu/service/impl/BattleServiceImpl.java`
 
-在类中添加内存缓存，用 `ConcurrentHashMap` + `CopyOnWriteArrayList` 实现线程安全的房间消息存储：
+在类中添加内存缓存，用 `ConcurrentHashMap` + `CopyOnriteArrayList` 实现线程安全的房间消息存储：
 
 ```java
 // 房间聊天消息缓存：roomId -> 消息列表

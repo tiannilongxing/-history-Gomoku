@@ -19,7 +19,7 @@ public interface ManageService {
      * 多条件查询用户列表
      */
     ResponseEntity<Map<String, Object>> getUserList(String username, String nickname, Integer status,
-                                                    Date startTime, Date endTime, Integer page, Integer size);
+                Date startTime, Date endTime, Integer page, Integer size);
 
     /**
      * 根据ID查询用户信息
@@ -51,8 +51,8 @@ public interface ManageService {
     /**
      * 多条件查询对战房间列表
      */
-    ResponseEntity<Map<String, Object>> getRoomList(String roomId, Integer status, Date startTime,
-                                                    Date endTime, Integer page, Integer size);
+    ResponseEntity<Map<String, Object>> getRoomList(String roomId, String playerName, Integer status, Date startTime,
+                Date endTime, Integer page, Integer size);
 
     /**
      * 根据房间号查询对战详情
@@ -67,10 +67,15 @@ public interface ManageService {
     // ============ 积分管理 ============
 
     /**
+     * 添加积分记录
+     */
+    ResponseEntity<Boolean> addScoreLog(Integer userId, Integer changeScore, String reason);
+
+    /**
      * 多条件查询积分记录
      */
     ResponseEntity<Map<String, Object>> getScoreLogList(Integer userId, String reason, Date startTime,
-                                                        Date endTime, Integer page, Integer size);
+                Date endTime, Integer page, Integer size);
 
     /**
      * 根据ID查询积分记录详情
