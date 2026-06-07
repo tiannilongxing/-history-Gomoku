@@ -330,6 +330,37 @@ public class ManageServiceImpl implements ManageService {
 
     @Override
     @Transactional
+    public ResponseEntity<Integer> cleanupTimeoutRooms() {
+        try {
+            List<Room> abnormalRooms = roomDao.selectAbnormalRooms();
+
+            if (abnormalRooms.isEmpty()) {
+                return ResponseEntity.success("没有需要清理的异常房间", 0);
+            }
+
+            List<String> roomIds = abnormalRooms.stream()
+                    .map(Room::getRoomId)
+                    .collect(Collectors.toList());
+
+            // 级联删除关联的棋盘记录和观战记录
+            for (String roomId : roomIds) {
+                chessboardDao.deleteByRoomId(roomId);
+                viewerDao.deleteByRoomId(roomId);
+            }
+
+            // 批量删除房间
+            int deletedCount = roomDao.batchDeleteByRoomIds(roomIds);
+            log.info("手动清理异常房间 {} 个", deletedCount);
+
+            return ResponseEntity.success("清理成功，共删除" + deletedCount + "个异常房间", deletedCount);
+        } catch (Exception e) {
+            log.error("清理异常房间失败: {}", e.getMessage(), e);
+            return ResponseEntity.error("清理异常房间失败: " + e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<Boolean> deleteRoom(String roomId) {
         try {
             if (!StringUtils.hasText(roomId)) {

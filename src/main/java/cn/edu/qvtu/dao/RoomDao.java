@@ -66,5 +66,17 @@ public interface RoomDao {
      * 查询用户参与的所有对局（作为玩家1或玩家2）
      */
     List<Room> selectRoomsByUserId(@Param("userId") Integer userId);
+
+    /**
+     * 查询异常房间：
+     * 1. status=2 且 player1_id 或 player2_id 缺失
+     * 2. status=1 且创建超过1天
+     */
+    List<Room> selectAbnormalRooms();
+
+    /**
+     * 批量删除房间（按roomId列表）
+     */
+    int batchDeleteByRoomIds(@Param("roomIds") List<String> roomIds);
 }
 

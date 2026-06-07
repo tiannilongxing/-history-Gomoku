@@ -174,6 +174,15 @@ public class ManageController {
         return manageService.deleteRoom(roomId);
     }
 
+    /**
+     * 清理超时房间（创建超过1分钟未开始的房间）
+     * POST /manage/room/cleanup
+     */
+    @PostMapping("/room/cleanup")
+    public ResponseEntity<Integer> cleanupTimeoutRooms() {
+        return manageService.cleanupTimeoutRooms();
+    }
+
     // ============ 积分管理接口 ============
 
     /**

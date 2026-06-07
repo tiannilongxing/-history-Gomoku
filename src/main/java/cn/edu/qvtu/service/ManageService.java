@@ -64,6 +64,11 @@ public interface ManageService {
      */
     ResponseEntity<Boolean> deleteRoom(String roomId);
 
+    /**
+     * 清理超时房间（创建超过1分钟未开始的房间）
+     */
+    ResponseEntity<Integer> cleanupTimeoutRooms();
+
     // ============ 积分管理 ============
 
     /**
