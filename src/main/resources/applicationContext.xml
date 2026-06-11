@@ -81,7 +81,7 @@
 
     <!-- 扫描Mapper接口 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-        <property name="basePackage" value="cn.edu.qvtu.dao"/>
+        <property name="basePackage" value="cn.edu.qvtu.common.dao,cn.edu.qvtu.gomoku.dao"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
     </bean>
 

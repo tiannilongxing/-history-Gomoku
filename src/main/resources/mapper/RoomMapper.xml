@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.edu.qvtu.dao.RoomDao">
-    <resultMap id="RoomMap" type="cn.edu.qvtu.entity.Room">
+<mapper namespace="cn.edu.qvtu.gomoku.dao.RoomDao">
+    <resultMap id="RoomMap" type="cn.edu.qvtu.gomoku.entity.Room">
         <id column="id" property="id"/>
         <result column="room_id" property="roomId"/>
         <result column="player1_id" property="player1Id"/>
@@ -92,7 +92,7 @@
     </select>
 
     <!-- 统计对局数量 -->
-    <select id="countBattles" resultType="cn.edu.qvtu.entity.StatisticsView">
+    <select id="countBattles" resultType="cn.edu.qvtu.common.entity.StatisticsView">
         SELECT
             COUNT(*) as totalBattles,
             COUNT(CASE WHEN DATE(create_time) = CURDATE() THEN 1 END) as todayBattles,
@@ -107,7 +107,7 @@
     </select>
 
     <!-- 查询近七日房间创建统计 -->
-    <select id="selectRecentWeekRoomStats" resultType="cn.edu.qvtu.entity.SevenDayStats">
+    <select id="selectRecentWeekRoomStats" resultType="cn.edu.qvtu.gomoku.entity.SevenDayStats">
         SELECT
             DATE(create_time) as date,
             COUNT(*) as roomCount,

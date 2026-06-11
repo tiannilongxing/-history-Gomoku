@@ -2,8 +2,8 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.edu.qvtu.dao.AdminLoginLogDao">
-    <resultMap id="AdminLoginLogMap" type="cn.edu.qvtu.entity.AdminLoginLog">
+<mapper namespace="cn.edu.qvtu.common.dao.AdminLoginLogDao">
+    <resultMap id="AdminLoginLogMap" type="cn.edu.qvtu.common.entity.AdminLoginLog">
         <id column="id" property="id"/>
         <result column="admin_id" property="adminId"/>
         <result column="admin_name" property="adminName"/>
