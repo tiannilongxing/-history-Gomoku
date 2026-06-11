@@ -1,0 +1,318 @@
+/* 五子棋对战平台 - 门户首页样式 */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg: #0f1923;
+    --bg-grad-1: #0f1923;
+    --bg-grad-2: #1a2a3a;
+    --surface: rgba(255,255,255,0.04);
+    --surface-hover: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.08);
+    --text: #e8e6e1;
+    --text-muted: #8a9aaa;
+    --primary: #4a6cf7;
+    --primary-glow: rgba(74,108,247,0.25);
+    --gold: #c8963e;
+    --gold-glow: rgba(200,150,62,0.2);
+    --white-piece: #f0ece4;
+    --black-piece: #1a1a2e;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===== 背景装饰 ===== */
+.portal-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.portal-bg::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    animation: floatBlob 12s ease-in-out infinite;
+}
+
+.portal-bg::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+    bottom: -80px;
+    right: -80px;
+    animation: floatBlob 10s ease-in-out infinite reverse;
+}
+
+@keyframes floatBlob {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -20px) scale(1.05); }
+    66% { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+/* 浮动棋子装饰 */
+.float-chess {
+    position: fixed;
+    border-radius: 50%;
+    opacity: 0.06;
+    z-index: 0;
+}
+
+.float-chess--black { background: radial-gradient(circle at 35% 30%, #666, #111); }
+.float-chess--white { background: radial-gradient(circle at 35% 30%, #fff, #ccc); }
+
+.float-chess:nth-child(1) { width: 60px; height: 60px; top: 8%; left: 10%; animation: drift 18s ease-in-out infinite; }
+.float-chess:nth-child(2) { width: 45px; height: 45px; top: 20%; right: 12%; animation: drift 14s ease-in-out infinite reverse; }
+.float-chess:nth-child(3) { width: 35px; height: 35px; bottom: 25%; left: 8%; animation: drift 16s ease-in-out infinite 2s; }
+.float-chess:nth-child(4) { width: 50px; height: 50px; bottom: 10%; right: 15%; animation: drift 20s ease-in-out infinite reverse 1s; }
+.float-chess:nth-child(5) { width: 40px; height: 40px; top: 50%; left: 50%; animation: drift 22s ease-in-out infinite 3s; }
+.float-chess:nth-child(6) { width: 30px; height: 30px; top: 70%; left: 18%; animation: drift 15s ease-in-out infinite reverse 2s; }
+
+@keyframes drift {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(5deg); }
+    50% { transform: translateY(10px) rotate(-3deg); }
+    75% { transform: translateY(-15px) rotate(2deg); }
+}
+
+/* ===== 主体内容 ===== */
+.portal-content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 40px 20px;
+    max-width: 900px;
+    width: 100%;
+}
+
+/* Logo 区域 */
+.portal-logo {
+    margin-bottom: 16px;
+}
+
+.portal-logo svg {
+    filter: drop-shadow(0 0 20px rgba(74,108,247,0.3));
+}
+
+.portal-title {
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #e8e6e1 30%, #c8963e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.portal-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 4px;
+    margin-bottom: 60px;
+}
+
+/* 入口卡片区域 */
+.portal-cards {
+    display: flex;
+    gap: 36px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.portal-card {
+    width: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 48px 32px 40px;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.portal-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.4s;
+}
+
+.portal-card--player::before {
+    background: radial-gradient(ellipse at 50% 0%, var(--primary-glow) 0%, transparent 70%);
+}
+
+.portal-card--admin::before {
+    background: radial-gradient(ellipse at 50% 0%, var(--gold-glow) 0%, transparent 70%);
+}
+
+.portal-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(255,255,255,0.15);
+    background: var(--surface-hover);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.portal-card:hover::before {
+    opacity: 1;
+}
+
+/* 卡片图标 */
+.portal-card__icon {
+    width: 90px;
+    height: 90px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.portal-card:hover .portal-card__icon {
+    transform: scale(1.08);
+}
+
+.portal-card--player .portal-card__icon {
+    background: linear-gradient(135deg, #4a6cf7, #6c5ce7);
+    box-shadow: 0 8px 30px rgba(74,108,247,0.3);
+}
+
+.portal-card--admin .portal-card__icon {
+    background: linear-gradient(135deg, #c8963e, #b8860b);
+    box-shadow: 0 8px 30px rgba(200,150,62,0.3);
+}
+
+.portal-card__icon svg {
+    width: 44px;
+    height: 44px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* 卡片文字 */
+.portal-card__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.portal-card__desc {
+    font-size: 0.92rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+/* 卡片箭头指示 */
+.portal-card__arrow {
+    margin-top: 28px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 1;
+}
+
+.portal-card--player .portal-card__arrow {
+    background: rgba(74,108,247,0.12);
+    color: #6b8aff;
+}
+
+.portal-card--admin .portal-card__arrow {
+    background: rgba(200,150,62,0.12);
+    color: #d4a76a;
+}
+
+.portal-card:hover .portal-card__arrow {
+    transform: translateX(4px);
+}
+
+.portal-card--player:hover .portal-card__arrow {
+    background: rgba(74,108,247,0.25);
+}
+
+.portal-card--admin:hover .portal-card__arrow {
+    background: rgba(200,150,62,0.25);
+}
+
+.portal-card__arrow svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ===== 底部 ===== */
+.portal-footer {
+    margin-top: 64px;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    opacity: 0.5;
+    letter-spacing: 1px;
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 720px) {
+    .portal-cards {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+    .portal-card {
+        width: 100%;
+        max-width: 360px;
+        padding: 36px 28px 32px;
+    }
+    .portal-title {
+        font-size: 2rem;
+    }
+    .portal-subtitle {
+        margin-bottom: 40px;
+    }
+}

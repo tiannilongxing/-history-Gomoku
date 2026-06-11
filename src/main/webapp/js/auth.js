@@ -18,7 +18,7 @@ class AuthManager {
     }
 
     static redirectToLogin() {
-        window.location.href = 'index.html';
+        window.location.href = 'lobby.html';
     }
 
     static requireAuth() {

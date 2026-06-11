@@ -30,7 +30,7 @@ class GameApp {
 
     if (!userData || !roomData) {
       alert('未找到房间信息，请返回大厅重新加入');
-      window.location.href = 'index.html';
+      window.location.href = 'lobby.html';
       return false;
     }
 
@@ -44,7 +44,7 @@ class GameApp {
     } catch (error) {
       console.error('解析会话数据失败:', error);
       alert('数据加载失败，请返回大厅重新加入');
-      window.location.href = 'index.html';
+      window.location.href = 'lobby.html';
       return false;
     }
   }
@@ -300,7 +300,7 @@ class GameApp {
     sessionStorage.removeItem('currentUser');
 
     // 返回大厅
-    window.location.href = 'index.html';
+    window.location.href = 'lobby.html';
   }
 
   async sendMessage() {
